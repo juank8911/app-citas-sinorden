@@ -15,7 +15,10 @@ import com.colsubsidio.salud.portal.utils.HandleDate;
 import com.colsubsidio.salud.portal.utils.ProcessChain;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,7 +89,11 @@ public class CitasService implements ICitasService {
 			}
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			try {
+				logsManager.LogsBuildAppInsights("exception", "CitasService; searchQuotesError" + ex.getMessage());
+			} catch (IOException ex1) {
+				Logger.getLogger(CitasService.class.getName()).log(Level.SEVERE, null, ex1);
+			}
 		}
 	}
 
