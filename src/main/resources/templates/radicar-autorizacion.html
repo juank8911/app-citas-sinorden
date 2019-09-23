@@ -1,0 +1,93 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-divansitional.ddiv">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="tetx/html; charset=UTF-8" />
+        <title>Eventos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    </head>
+    <body class="bodyContent" style="margin: 0; padding: 0; width:50em;">
+        <div align="center"  style=" height: auto;background: #1F005B;  color: #153643; font-size: 0.8em; font-weight: bold; font-family: Arial, sans-serif;">
+            <div>
+                <img style="width: auto; height: 50px;" src="https://www.colsubsidio.com/images/logo.png" alt=""/>
+            </div>
+        </div>
+        <div  style="width:50em; height: auto; background: #F5F5F5; padding: 0px 50px 0px 50px;">
+            <div  style="width: 50em; height: auto; background: #ffffff;  padding: 40px 30px 40px 30px;">
+                <div border="0" cellpadding="0" cellspacing="0" width="50em">
+                    <div>
+                        <div style="color: #34005B; text-align: center; font-family: Arial, sans-serif; font-size: 1em;">
+                            <h4>
+                                Informaci&oacute;n Autorizaci&oacute;n M&eacute;dica
+                            </h4>
+                        </div>
+                    </div>
+                    <div style="display: inherit">
+
+                        <table>
+                            <tr>
+                                <td colspan="2">
+                                    <p><span style="color: #254061">Buen día respetado(a) Sr(a)&nbsp; <span th:text="${name}"></span> <!-- o ignored --></span></p>
+                                    <p><span style="color: #254061">Sabemos&nbsp;que escogió la mejor opción para la gestion de su autorización en la IPS Colsubsidio.<!-- o ignored --></span></p>                                
+                                    <hr>
+                                </td>
+                            </tr>                            
+                            <tr>
+                                <td colspan="2" style="border: none; padding: .75pt .75pt .75pt .75pt">
+                                    <p>
+                                        <b>
+                                            <span style="color: #254061">CONFIRMACI&Oacute;N DE RADICADO PARA SU AUTORIZACI&Oacute;N<br>
+                                                    <span th:text="${typeName}"></span>                                                        
+                                            </span>
+                                        </b>
+                                    </p>
+                                    <hr>
+                                </td>
+                            </tr> 
+                            <tr>
+                                <td style="border: none; padding: .75pt .75pt .75pt .75pt" colspan="2">
+                                    <span style="color: #254061">
+                                        <p>
+                                            Señor usuario, su solicitud fue radicada en Colsubsidio con el N. <span style="color: #254061" th:text="${code}"></span>; recibirá respuesta por  mensaje de texto y/o correo electrónico a los 5 días hábiles, si no la recibe; ingrese a https://enlinea.famisanar.com.co para consultar e imprimir su autorización.
+                                        </p>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>    
+                </div>
+            </div>
+        </div>
+
+        <div style="width: 50em">
+            <div  style="background: #F4F2F3; padding: 30px 30px 30px 30px;">
+                <div border="0" cellpadding="0" cellspacing="0">
+                    <div>
+                        <div   width="">
+                            <div border="0" cellpadding="0" cellspacing="0">
+                                <div style="display: flex" align="right" >
+                                    <div style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+                                        <a href="https://www.facebook.com/ColsubsidioInfo/" style="color: #1F005B;">
+                                            <img src="https://www.colsubsidio.com/uploads/2016/10/fb.png" alt="Facebook" width="38" height="38" style="display: block;" border="0" />
+                                        </a>
+                                    </div>
+                                    <div style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+                                        <a href="https://twitter.com/Colsubsidio_Ofi" style="color: #1F005B;">
+                                            <img src="https://www.colsubsidio.com/uploads/2016/10/tw.png" alt="Twitter" width="38" height="38" style="display: block;" border="0" />
+                                        </a>
+                                    </div>
+                                    <div style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+                                        <a href="https://www.linkedin.com/company-beta/757002/" style="color: #1F005B;">
+                                            <img src="https://www.colsubsidio.com/uploads/2016/10/in.png" alt="Twitter" width="38" height="38" style="display: block;" border="0" />
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,55 @@
+version: '2'
+services:
+  back_service:
+    image:  colsazurecontainerregistrydigital.azurecr.io/portalsalud/salud/backend:prod
+    ports:
+      - "80:80" 
+    env_file:
+      - production.env           
+    build:  
+      context: ./
+      args:
+        - DEPLOYMENT_PORT              
+        - CONNECTIONSTRINGBLOB
+        - CONTAINERNAME
+        - MYSQL_USER
+        - MYSQL_PASSWORD    
+        - MYSQL_CONECTION_SPRING 
+        - EMAIL_HOST 
+        - EMAIL 
+        - EMAIL_PASSWORD 
+        - EMAIL_PORT        
+      dockerfile: ./Dockerfile
+    networks:
+      - network   
+    volumes:
+      - back_dist:/back-dist
+      - back_logs:/var/log:rw
+    environment:
+      - LOGGING_FILE=/var/log/portalsalud-log.log
+    privileged: true
+    restart: always
+  proxy_service:
+    image:  colsazurecontainerregistrydigital.azurecr.io/colsubsidioproxy/back-proxy:portalsalud
+    ports:
+      - 80:80
+    build:
+     context: ./back-proxy
+     dockerfile: ./Dockerfile
+    networks:
+      - network 
+    volumes:
+      - proxy_config:/etc/nginx
+      - proxy_logs:/var/log
+    restart: always
+    depends_on:
+      - back_service   
+volumes:
+  back_dist:
+  back_logs:
+  proxy_config:
+  proxy_logs:
+networks:
+  network:
+   
+        

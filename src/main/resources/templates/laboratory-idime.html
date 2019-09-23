@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-divansitional.ddiv">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>pdf Idime</title>
+<meta http-equiv="Content-Type" content="tetx/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style th:utext="${styles}"></style>
+
+</head>
+
+<body>
+	<div class="container">
+		<table width="99.9%">
+			<tr>
+				<td align="center"><img
+					alt="Colsubsidio - Todo lo que te mereces" width="400%"
+					src="https://colstssaludproduccion.blob.core.windows.net/colsubsidioportalsalud/uploads/store/images/colsubsidio.png" />
+				</td>
+			</tr>
+		</table>
+		<div class="row cabecera">
+			<div class="col-md-12" th:utext="${tablePrincipal}"></div>
+		</div>
+		<div class="col-md-12">
+			<hr></hr>
+			<table width="100%">
+				<tbody th:utext="${tableHead}">
+				</tbody>
+			</table>
+			<hr></hr>
+		</div>
+		<br></br>
+	</div>
+	<table class="tabledat">
+		<tbody th:utext="${tableResult}">
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="6" class="center"><br>&nbsp;</br> <br>&nbsp;</br></td>
+			</tr>
+			<tr>
+				<td style='width: 10%;'></td>
+				<td style='width: 10%;'></td>
+				<td style='width: 12%;'></td>
+				<td style='width: 12%;'></td>
+				<td style='width: 10%;'>-</td>
+				<td style='width: 13%;'></td>
+			</tr>
+			<tr>
+				<td colspan="6" style='font-size: 10px; text-align: center;'><u>Nota: la
+						empresa no se responsabiliza por enmendaduras realizadas a este
+						reporte</u></td>
+			</tr>
+		</tfoot>
+	</table>
+	<div th:utext="${imagefoot}"></div>
+
+
+</body>
+
+</html>

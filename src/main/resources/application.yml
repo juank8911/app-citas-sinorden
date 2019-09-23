@@ -1,0 +1,18 @@
+## YAML Template.
+
+#security:
+#    oauth2:
+#        client:
+#            grant-type: client_credentials
+#            client-id: 9ZajtAJ3i9BLMDri8UxTaQTsZFv47oo8
+#            client-secret: WHIaAwMCiMwrvZFp
+#            access-token-uri: https://colsubsidio-prod.apigee.net/oauth/client_credential/accesstoken?grant_type=client_credentials
+            
+security:
+  oauth2:
+    client:
+      clientId: 9ZajtAJ3i9BLMDri8UxTaQTsZFv47oo8
+      clientSecret: WHIaAwMCiMwrvZFp
+      accessTokenUri: https://colsubsidio-prod.apigee.net/oauth/client_credential/accesstoken
+      tokenName: access_token
+      grant-type: client_credentials
