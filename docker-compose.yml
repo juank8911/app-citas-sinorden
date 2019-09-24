@@ -23,27 +23,10 @@ services:
     environment:
       - LOGGING_FILE=/var/log/portalsalud-log.log
     privileged: true
-    restart: always
-  proxy_service:
-    image:  colsazurecontainerregistrydigital.azurecr.io/colsubsidioproxy/back-proxy:portalsalud
-    ports:
-      - 80:80
-    build:
-     context: ./back-proxy
-     dockerfile: ./Dockerfile
-    networks:
-      - network 
-    volumes:
-      - proxy_config:/etc/nginx
-      - proxy_logs:/var/log
-    restart: always
-    depends_on:
-      - back_service   
+    restart: always  
 volumes:
   back_dist:
   back_logs:
-  proxy_config:
-  proxy_logs:
 networks:
   network:
    
