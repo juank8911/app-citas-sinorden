@@ -5,11 +5,6 @@
  */
 package com.colsubsidio.salud.portal.services;
 
-import com.colsubsidio.salud.auth.dao.interfaces.IServicesDAO;
-import com.colsubsidio.salud.portal.models.BearerToken;
-
-import com.colsubsidio.salud.portal.services.interfaces.IAuthService;
-import com.colsubsidio.salud.portal.utils.LogsManager;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
@@ -23,7 +18,12 @@ import org.springframework.stereotype.Component;
 import com.colsubsidio.salud.portal.models.Response;
 import com.colsubsidio.salud.portal.models.deletewithoutorder.Delete;
 import com.colsubsidio.salud.portal.services.interfaces.IDeleteWithoutOrderService;
-import com.colsubsidio.salud.portal.services.util.ServiceUtil;
+import com.colsubsidio.salud.transversal.dao.interfaces.IServicesDAO;
+import com.colsubsidio.salud.transversal.models.BearerToken;
+import com.colsubsidio.salud.transversal.models.Services;
+import com.colsubsidio.salud.transversal.services.interfaces.IAuthService;
+import com.colsubsidio.salud.transversal.services.util.ServiceUtil;
+import com.colsubsidio.salud.transversal.utils.LogsManager;
 import com.google.gson.Gson;
 
 /**

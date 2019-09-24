@@ -4,7 +4,8 @@ import com.colsubsidio.salud.portal.common.CommonConstantsDB;
 import com.colsubsidio.salud.portal.common.PropertiesLoader;
 import com.colsubsidio.salud.portal.dao.interfaces.IScheduleDAO;
 import com.colsubsidio.salud.portal.models.Schedule;
-import com.colsubsidio.salud.portal.utils.LogsManager;
+import com.colsubsidio.salud.transversal.utils.LogsManager;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;

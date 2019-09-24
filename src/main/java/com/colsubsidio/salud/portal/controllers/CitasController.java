@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/citas")
 public class CitasController {
 
-    @Autowired
-    private ICitasService citasService;
+	@Autowired
+	private ICitasService citasService;
 
-    @Scheduled(cron = "0 0/1 0 ? * *")
-    @RequestMapping(value = "/tarea/borrarCitaSinOrden", produces = "application/json", method = RequestMethod.GET)
-    public void searchQuotesError() {
-        citasService.searchQuotesError();
-    }
+	@Scheduled(cron = "0 0/5 0 ? * *")
+	@RequestMapping(value = "/tarea/borrarCitaSinOrden", produces = "application/json", method = RequestMethod.GET)
+	public void searchQuotesError() {
+		citasService.searchQuotesError();
+	}
 
 }

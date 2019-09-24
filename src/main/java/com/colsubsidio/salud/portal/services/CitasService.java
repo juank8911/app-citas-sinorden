@@ -10,9 +10,9 @@ import com.colsubsidio.salud.portal.models.Schedule;
 import com.colsubsidio.salud.portal.models.deletewithoutorder.Delete;
 import com.colsubsidio.salud.portal.services.interfaces.ICitasService;
 import com.colsubsidio.salud.portal.services.interfaces.IDeleteWithoutOrderService;
-import com.colsubsidio.salud.portal.utils.LogsManager;
-import com.colsubsidio.salud.portal.utils.HandleDate;
-import com.colsubsidio.salud.portal.utils.ProcessChain;
+import com.colsubsidio.salud.transversal.utils.HandleDate;
+import com.colsubsidio.salud.transversal.utils.LogsManager;
+import com.colsubsidio.salud.transversal.utils.ProcessChain;
 import com.google.gson.Gson;
 
 import java.io.IOException;
