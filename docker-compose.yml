@@ -1,7 +1,7 @@
 version: '2'
 services:
   back_service:
-    image:  colsazurecontainerregistrydigital.azurecr.io/portalsalud/salud/backend:prod
+    image:  colsazurecontainerregistrydigital.azurecr.io/portalsalud/salud/backend/citas/sinorden:prod
     ports:
       - "80:80" 
     env_file:
@@ -10,15 +10,10 @@ services:
       context: ./
       args:
         - DEPLOYMENT_PORT              
-        - CONNECTIONSTRINGBLOB
-        - CONTAINERNAME
         - MYSQL_USER
         - MYSQL_PASSWORD    
-        - MYSQL_CONECTION_SPRING 
-        - EMAIL_HOST 
-        - EMAIL 
-        - EMAIL_PASSWORD 
-        - EMAIL_PORT        
+        - MYSQL_CONECTION_SPRING        
+        - APPLICATION_INSIGHTS
       dockerfile: ./Dockerfile
     networks:
       - network   

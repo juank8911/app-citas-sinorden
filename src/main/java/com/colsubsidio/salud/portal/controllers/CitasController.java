@@ -18,7 +18,7 @@ public class CitasController {
     @Autowired
     private ICitasService citasService;
 
-    @Scheduled(cron = "0 0 0 ? * *")
+    @Scheduled(cron = "0 0/1 0 ? * *")
     @RequestMapping(value = "/tarea/borrarCitaSinOrden", produces = "application/json", method = RequestMethod.GET)
     public void searchQuotesError() {
         citasService.searchQuotesError();
