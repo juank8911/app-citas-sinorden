@@ -18,7 +18,7 @@ services:
     networks:
       - network   
     volumes:
-      - back_dist:/back-dist
+      - back_dist:/home
       - back_logs:/var/log:rw
     environment:
       - LOGGING_FILE=/var/log/portalsalud-log.log
