@@ -62,19 +62,12 @@ public class CitasService implements ICitasService {
 				logsManager.LogsBuildAppInsights("info",
 						"excecuteTaskError; list appointments with error, quantity = " + listSchedule.size());
 				for (Schedule schedule : listSchedule) {
-					logsManager.LogsBuildAppInsights("info",
-							"excecuteTaskError; going through appointments with error");
 					if (schedule != null && !schedule.getReservation().isEmpty()) {
-						logsManager.LogsBuildAppInsights("info",
-								"excecuteTaskError; appointment number reserve = " + schedule.getReservation());
 						delete = new Delete();
 						delete.getBorrarSinOrden().getCita().setIdReserva(schedule.getReservation());
 						responseEntity = deleteWithoutOrderService.deleteWithoutOrder(delete);
-
 						if (responseEntity.getStatusCode().equals(HttpStatus.OK)
 								&& !responseEntity.getBody().equals("")) {
-							logsManager.LogsBuildAppInsights("info",
-									"excecuteTaskError; correct appointment elimination" + gson.toJson(responseEntity));
 							scheduleDAO.updateSchedule(new Schedule("", schedule.getReservation(),
 									schedule.getSpecialty(), "cancelTask", schedule.getType_document(),
 									schedule.getDocument_number(), gson.toJson(responseEntity),
