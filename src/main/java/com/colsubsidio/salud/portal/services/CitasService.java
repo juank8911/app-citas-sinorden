@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,69 +33,70 @@ import org.springframework.stereotype.Component;
 @Component
 public class CitasService implements ICitasService {
 
-    @Autowired
-    private ProcessChain o;
+	@Autowired
+	private ProcessChain o;
 
-    @Autowired
-    private HandleDate f;
+	@Autowired
+	private HandleDate f;
 
-    @Autowired
-    private IScheduleDAO scheduleDAO;
+	@Autowired
+	private IScheduleDAO scheduleDAO;
 
-    @Autowired
-    private IDeleteWithoutOrderService deleteWithoutOrderService;
+	@Autowired
+	private IDeleteWithoutOrderService deleteWithoutOrderService;
 
-    @Autowired
-    private LogsManager logsManager;
+	@Autowired
+	private LogsManager logsManager;
 
-    public void searchQuotesError() {
+	@Async("asyncExecutor")
+	public void searchQuotesError() {
 
-        Delete delete;
-        Gson gson = new Gson();
-        ResponseEntity<?> responseEntity = null;
-        try {
+		Delete delete;
+		Gson gson = new Gson();
+		ResponseEntity<?> responseEntity = null;
+		try {
 
-            List<Schedule> listSchedule = scheduleDAO.selectSchedule();
-            logsManager.LogsBuildAppInsights("info", "excecuteTaskError; search for appointments with error");
-            if (listSchedule != null && !listSchedule.isEmpty()) {
-                logsManager.LogsBuildAppInsights("info",
-                        "excecuteTaskError; list appointments with error, quantity = " + listSchedule.size());
-                for (Schedule schedule : listSchedule) {
-                    logsManager.LogsBuildAppInsights("info",
-                            "excecuteTaskError; going through appointments with error");
-                    if (schedule != null && !schedule.getReservation().isEmpty()) {
-                        logsManager.LogsBuildAppInsights("info",
-                                "excecuteTaskError; appointment number reserve = " + schedule.getReservation());
-                        delete = new Delete();
-                        delete.getBorrarSinOrden().getCita().setIdReserva(schedule.getReservation());
-                        responseEntity = deleteWithoutOrderService.deleteWithoutOrder(delete);
+			List<Schedule> listSchedule = scheduleDAO.selectSchedule();
+			logsManager.LogsBuildAppInsights("info", "excecuteTaskError; search for appointments with error");
+			if (listSchedule != null && !listSchedule.isEmpty()) {
+				logsManager.LogsBuildAppInsights("info",
+						"excecuteTaskError; list appointments with error, quantity = " + listSchedule.size());
+				for (Schedule schedule : listSchedule) {
+					logsManager.LogsBuildAppInsights("info",
+							"excecuteTaskError; going through appointments with error");
+					if (schedule != null && !schedule.getReservation().isEmpty()) {
+						logsManager.LogsBuildAppInsights("info",
+								"excecuteTaskError; appointment number reserve = " + schedule.getReservation());
+						delete = new Delete();
+						delete.getBorrarSinOrden().getCita().setIdReserva(schedule.getReservation());
+						responseEntity = deleteWithoutOrderService.deleteWithoutOrder(delete);
 
-                        if (responseEntity.getStatusCode().equals(HttpStatus.OK)
-                                && !responseEntity.getBody().equals("")) {
-                            logsManager.LogsBuildAppInsights("info",
-                                    "excecuteTaskError; correct appointment elimination" + gson.toJson(responseEntity));
-                            scheduleDAO.updateSchedule(new Schedule("", schedule.getReservation(),
-                                    schedule.getSpecialty(), "cancelTask", schedule.getType_document(),
-                                    schedule.getDocument_number(), gson.toJson(responseEntity),
-                                    f.getFechaHoraTimeStamp(0), "deleteWithoutOrder"));
-                        } else {
-                            logsManager.LogsBuildAppInsights("info",
-                                    "excecuteTaskError; incorrect appointment elimination"
-                                    + gson.toJson(responseEntity));
-                        }
-                    }
-                }
-            } else {
-                logsManager.LogsBuildAppInsights("info", "excecuteTaskError; no appointments found with error");
-            }
+						if (responseEntity.getStatusCode().equals(HttpStatus.OK)
+								&& !responseEntity.getBody().equals("")) {
+							logsManager.LogsBuildAppInsights("info",
+									"excecuteTaskError; correct appointment elimination" + gson.toJson(responseEntity));
+							scheduleDAO.updateSchedule(new Schedule("", schedule.getReservation(),
+									schedule.getSpecialty(), "cancelTask", schedule.getType_document(),
+									schedule.getDocument_number(), gson.toJson(responseEntity),
+									f.getFechaHoraTimeStamp(0), "deleteWithoutOrder"));
+						} else {
+							logsManager.LogsBuildAppInsights("info",
+									"excecuteTaskError; incorrect appointment elimination"
+											+ gson.toJson(responseEntity));
+						}
+					}
+				}
+			} else {
+				logsManager.LogsBuildAppInsights("info", "excecuteTaskError; no appointments found with error");
+			}
 
-        } catch (Exception ex) {
-            try {
-                logsManager.LogsBuildAppInsights("exception", "CitasService; searchQuotesError" + ex.getMessage());
-            } catch (IOException ex1) {
-                Logger.getLogger(CitasService.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-        }
-    }
+		} catch (Exception ex) {
+			try {
+				logsManager.LogsBuildAppInsights("exception", "CitasService; searchQuotesError" + ex.getMessage());
+			} catch (IOException ex1) {
+				Logger.getLogger(CitasService.class.getName()).log(Level.SEVERE, null, ex1);
+			}
+		}
+	}
 
 }
