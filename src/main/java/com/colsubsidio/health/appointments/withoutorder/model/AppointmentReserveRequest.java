@@ -1,7 +1,5 @@
 package com.colsubsidio.health.appointments.withoutorder.model;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -14,10 +12,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DeleteWithoutOrderResponse {
+public class AppointmentReserveRequest {
 
-	@JsonProperty("resultado")
-	public List<Result> result;
-	@JsonProperty("borrarSinOrden")
-	public CancelWithoutOrder cancelWithoutOrder;
+	@JsonProperty("fechaHora")
+	public String datetime;
+
 }

@@ -47,7 +47,7 @@ public class AppointmentWithoutOrderBusiness {
 
 	private static String exception = "exception";
 
-	public ResponseEntity<?> getReservationWithoutOrder(AppointmentInformationDTO appointmentInformation) {
+	public ResponseEntity<CreateWithoutOrderResponse> getReservationWithoutOrder(AppointmentInformationDTO appointmentInformation) {
 
 		CreateWithoutOrderResponse createWithoutOrderResponse = new CreateWithoutOrderResponse();
 		LogAppointmentDTO logAppoint = new LogAppointmentDTO();
@@ -156,7 +156,8 @@ public class AppointmentWithoutOrderBusiness {
 		logAppoint.setIdOrder(null);
 		logAppoint.setIdSpecialty(appointmentInformation.getSpecialtyDetail().getCode());
 		logAppoint.setDescriptionSpecialty(appointmentInformation.getSpecialtyDetail().getDescription());
-		logAppoint.setDate(appointmentInformation.getPatientDetail().getTypeDocument());
+		logAppoint.setDate(appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder()
+				.getAppointment().getDatetime());
 		logAppoint.setIpClient(appointmentInformation.getClientDetail().getIpAddress());
 	}
 

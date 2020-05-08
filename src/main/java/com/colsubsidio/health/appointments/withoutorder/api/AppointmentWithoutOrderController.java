@@ -40,7 +40,8 @@ public class AppointmentWithoutOrderController {
 	 */
 	@ResponseBody
 	@PostMapping(value = "/reserva-confirmacion", produces = "application/json")
-	public ResponseEntity<?> getReservationWithoutOrder(@RequestBody AppointmentInformationDTO appointmentInformation) {
+	public ResponseEntity<CreateWithoutOrderResponse> getReservationWithoutOrder(
+			@RequestBody AppointmentInformationDTO appointmentInformation) {
 		return appointmentWithoutOrderBusiness.getReservationWithoutOrder(appointmentInformation);
 	}
 
@@ -51,7 +52,8 @@ public class AppointmentWithoutOrderController {
 	 */
 	@ResponseBody
 	@PutMapping(value = "/eliminacion-cita", produces = "application/json")
-	public ResponseEntity<?> getDeleteWithoutOrder(@RequestBody DeleteInformationDTO deleteInformationDTO) {
+	public ResponseEntity<DeleteWithoutOrderResponse> getDeleteWithoutOrder(
+			@RequestBody DeleteInformationDTO deleteInformationDTO) {
 		return deleteWithoutOrderBusiness.getDeleteWithoutOrder(deleteInformationDTO);
 	}
 

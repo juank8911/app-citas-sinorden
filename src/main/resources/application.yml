@@ -1,8 +1,9 @@
 server:
-  port: 8082
+  port: 80
   servlet:
     context-path: /v1.0/
 spring:
+  profiles: develop
 #  datasource:
 #    driverClassName: com.mysql.jdbc.Driver
 #    url: jdbc:mysql://colsdigitaldbproduccionsalud.mysql.database.azure.com:3306/portalsalud?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC

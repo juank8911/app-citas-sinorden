@@ -19,4 +19,5 @@ public class DeleteInformationDTO {
 	private PatientDetailDTO patientDetail;
 	private ClientDetailDTO clientDetail;
 	private MedicalAppointmentDTO medicalAppointment;
+	private SpecialtyDetailDTO specialtyDetail;
 }
