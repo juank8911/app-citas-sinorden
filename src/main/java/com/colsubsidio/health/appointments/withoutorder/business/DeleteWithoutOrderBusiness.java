@@ -40,17 +40,15 @@ public class DeleteWithoutOrderBusiness {
 	private static String exception = "exception";
 
 	public ResponseEntity<DeleteWithoutOrderResponse> getDeleteWithoutOrder(DeleteInformationDTO deleteInformation) {
-
+		
 		DeleteWithoutOrderResponse response = new DeleteWithoutOrderResponse();
 		ResponseEntity<DeleteWithoutOrderResponse> responseDelete = null;
 		DeleteWithoutOrderRequest deleteWithoutOrderRequest = deleteInformation.getDeleteWithoutOrder();
 		LogAppointmentDTO logAppoint = new LogAppointmentDTO();
 		List<Result> resultList = new ArrayList<>();
-		System.out.println(deleteInformation);
 		try {
 			this.buildPatientData(logAppoint, deleteInformation);
 			responseDelete = appointmentWithoutOrderService.getDeleteWithoutOrder(deleteWithoutOrderRequest);
-			System.out.println(responseDelete);
 			if (responseDelete != null && responseDelete.getStatusCode().equals(HttpStatus.OK)
 					&& responseDelete.getBody() != null) {
 				logsDAO.createLog("cancel", logAppoint.toString());
@@ -61,9 +59,8 @@ public class DeleteWithoutOrderBusiness {
 				response.setResult(resultList);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-//			logsManager.logsBuildAppInsights(exception,
-//					"DeleteWithoutOrderBusiness; getDeleteWithoutOrder; " + ex.getMessage());
+			logsManager.logsBuildAppInsights(exception,
+					"DeleteWithoutOrderBusiness; getDeleteWithoutOrder; " + ex.getMessage());
 		}
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}

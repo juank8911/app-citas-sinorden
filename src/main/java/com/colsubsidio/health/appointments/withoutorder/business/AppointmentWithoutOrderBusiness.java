@@ -47,7 +47,8 @@ public class AppointmentWithoutOrderBusiness {
 
 	private static String exception = "exception";
 
-	public ResponseEntity<CreateWithoutOrderResponse> getReservationWithoutOrder(AppointmentInformationDTO appointmentInformation) {
+	public ResponseEntity<CreateWithoutOrderResponse> getReservationWithoutOrder(
+			AppointmentInformationDTO appointmentInformation) {
 
 		CreateWithoutOrderResponse createWithoutOrderResponse = new CreateWithoutOrderResponse();
 		LogAppointmentDTO logAppoint = new LogAppointmentDTO();
@@ -90,8 +91,8 @@ public class AppointmentWithoutOrderBusiness {
 		ResponseEntity<CreateWithoutOrderResponse> response = null;
 		CreateWithoutOrderRequest createWithoutOrder = new CreateWithoutOrderRequest();
 
-		Schedule schedule = new Schedule("", logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "pending",
-				logAppoint.getTypeDocument(), logAppoint.getNumberDocument(), "", dateUtils.getDateTimeTimeStamp(),
+		Schedule schedule = new Schedule(null, logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "pending",
+				logAppoint.getTypeDocument(), logAppoint.getNumberDocument(), null, dateUtils.getDateTimeTimeStamp(),
 				logAppoint.getNumberDocument());
 
 		try {
@@ -118,23 +119,17 @@ public class AppointmentWithoutOrderBusiness {
 	public ResponseEntity<CreateWithoutOrderResponse> getDeleteWithoutOrder(LogAppointmentDTO logAppoint) {
 
 		CreateWithoutOrderResponse response = new CreateWithoutOrderResponse();
-		ResponseEntity<DeleteWithoutOrderResponse> responseDelete = null;
 		DeleteWithoutOrderRequest deleteWithoutOrder = new DeleteWithoutOrderRequest();
 		List<Result> resultList = new ArrayList<>();
 		try {
 
 			if (logAppoint.getIdReservation() != null && !logAppoint.getIdReservation().isEmpty()) {
 				deleteWithoutOrder.getDeleteWithoutOrder().getAppointment().setIdReserve(logAppoint.getIdReservation());
-				responseDelete = appointmentWithoutOrderService.getDeleteWithoutOrder(deleteWithoutOrder);
+				appointmentWithoutOrderService.getDeleteWithoutOrder(deleteWithoutOrder);
 
-				if (responseDelete.getStatusCode().equals(HttpStatus.OK) && responseDelete.getBody() != null) {
-					logsDAO.createLog("cancelAplication", logAppoint.toString());
-					resultList.add(new Result(ResultAppointmentEnum.ERROR.getCode(),
-							ResultAppointmentEnum.ERROR.getDescription()));
-				} else {
-					resultList.add(new Result(ResultAppointmentEnum.ERROR.getCode(),
-							ResultAppointmentEnum.ERROR.getDescription()));
-				}
+				logsDAO.createLog("cancelAplication", logAppoint.toString());
+				resultList.add(new Result(ResultAppointmentEnum.ERROR.getCode(),
+						ResultAppointmentEnum.ERROR.getDescription()));
 			}
 			response.setResult(resultList);
 		} catch (Exception e) {
@@ -146,7 +141,7 @@ public class AppointmentWithoutOrderBusiness {
 	}
 
 	private void buildPatientData(LogAppointmentDTO logAppoint, AppointmentInformationDTO appointmentInformation)
-			throws Exception {
+			throws NullPointerException {
 
 		appointmentInformation.getPatientDetail().buildFullname();
 		logAppoint.setTypeDocument(appointmentInformation.getPatientDetail().getTypeDocument());
@@ -174,10 +169,10 @@ public class AppointmentWithoutOrderBusiness {
 					logsDAO.createLog("reservation", logAppoint.toString());
 
 					scheduleDAO.insertSchedule(
-							new Schedule(dateUtils.getDateTimeTimeStamp(), "", logAppoint.getIdReservation(),
+							new Schedule(dateUtils.getDateTimeTimeStamp(), null, logAppoint.getIdReservation(),
 									logAppoint.getIdSpecialty(), "reservation", logAppoint.getTypeDocument(),
-									logAppoint.getNumberDocument(), gson.toJson(reservationAppointment), "", null, "",
-									dateUtils.getDateTimeTimeStamp(), logAppoint.getNumberDocument()));
+									logAppoint.getNumberDocument(), gson.toJson(reservationAppointment), null, null,
+									null, dateUtils.getDateTimeTimeStamp(), logAppoint.getNumberDocument()));
 				}
 			}
 		} catch (Exception ex) {
