@@ -11,8 +11,8 @@ spring:
 #    password: 123456789!aA
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://colbackendqa.mysql.database.azure.com:3306/portalsalud?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-    username: colsadmin@colbackendqa
+    url: jdbc:mysql://cols-db-digqa-util.mysql.database.azure.com:3306/portalsalud?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: colsadmin@cols-db-digqa-util
     password: 123456789!aA
   application:
     name: api-salud-citas-sinorden
