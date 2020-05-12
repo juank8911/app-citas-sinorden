@@ -17,7 +17,7 @@ import lombok.ToString;
 public class ReservationAppointmentResponse {
 
 	@JsonProperty("resultado")
-	public List<Result> resultado;
+	public List<Result> result;
 	@JsonProperty("reservaSinOrden")
 	public ReserveWithoutOrderResponse reserveWithoutOrder;
 

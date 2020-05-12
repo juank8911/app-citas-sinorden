@@ -1,5 +1,6 @@
 package com.colsubsidio.health.appointments.withoutorder.dto;
 
+import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.ReservationAppointmentRequest;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.ToString;
 public class AppointmentInformationDTO {
 
 	private ReservationAppointmentRequest reserveWithoutOrderRequest;
+	private CreateWithoutOrderRequest createWithoutOrderRequest;
 	private PatientDetailDTO patientDetail;
 	private ClientDetailDTO clientDetail;
 	private SpecialtyDetailDTO specialtyDetail;

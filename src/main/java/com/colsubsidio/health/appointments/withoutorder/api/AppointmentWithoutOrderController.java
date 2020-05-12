@@ -40,9 +40,9 @@ public class AppointmentWithoutOrderController {
 	 */
 	@ResponseBody
 	@PostMapping(value = "/reserva-confirmacion", produces = "application/json")
-	public ResponseEntity<CreateWithoutOrderResponse> getReservationWithoutOrder(
+	public ResponseEntity<CreateWithoutOrderResponse> getReservationWithoutOrderMerge(
 			@RequestBody AppointmentInformationDTO appointmentInformation) {
-		return appointmentWithoutOrderBusiness.getReservationWithoutOrder(appointmentInformation);
+		return appointmentWithoutOrderBusiness.getReservationWithoutOrderMerge(appointmentInformation);
 	}
 
 	/**
@@ -59,38 +59,26 @@ public class AppointmentWithoutOrderController {
 
 	/**
 	 *
-	 * @param reservationAppointment
+	 * @param getReservationWithoutOrder
 	 * @return
 	 */
 	@ResponseBody
-	@PostMapping("/reserva")
+	@PostMapping(value = "/reserva", produces = "application/json")
 	public ResponseEntity<ReservationAppointmentResponse> getReservationWithoutOrder(
-			@RequestBody ReservationAppointmentRequest reservationAppointment) {
-		return appointmentWithoutOrderBusiness.getReservationWithoutOrder(reservationAppointment);
+			@RequestBody AppointmentInformationDTO appointmentInformation) {
+		return appointmentWithoutOrderBusiness.getReservationWithoutOrder(appointmentInformation);
 	}
 
 	/**
 	 *
-	 * @param createWithoutOrder
+	 * @param getCreateWithoutOrder
 	 * @return
 	 */
 	@ResponseBody
-	@PutMapping("/confirmacion")
+	@PutMapping(value = "/confirmacion", produces = "application/json")
 	public ResponseEntity<CreateWithoutOrderResponse> getCreateWithoutOrder(
-			@RequestBody CreateWithoutOrderRequest createWithoutOrder) {
-		return appointmentWithoutOrderBusiness.getCreateWithoutOrder(createWithoutOrder);
-	}
-
-	/**
-	 *
-	 * @param deleteWithoutOrderRequest
-	 * @return
-	 */
-	@ResponseBody
-	@PutMapping("/eliminacion")
-	public ResponseEntity<DeleteWithoutOrderResponse> getDeleteWithoutOrder(
-			@RequestBody DeleteWithoutOrderRequest deleteWithoutOrderRequest) {
-		return appointmentWithoutOrderBusiness.getDeleteWithoutOrder(deleteWithoutOrderRequest);
+			@RequestBody AppointmentInformationDTO appointmentInformation) {
+		return appointmentWithoutOrderBusiness.getCreateWithoutOrder(appointmentInformation);
 	}
 
 }

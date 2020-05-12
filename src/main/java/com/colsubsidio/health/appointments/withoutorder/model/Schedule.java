@@ -4,9 +4,11 @@ import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@lombok.Data
+@Data
 @Builder
 @AllArgsConstructor
 @ToString
