@@ -33,6 +33,8 @@ public class LogAppointmentDTO {
 	private String ipClient;
 	@JsonProperty("valor")
 	private String value;
+	@JsonProperty("citaDesistir")
+	public String desistAppointment;
 
 	@Override
 	public String toString() {

@@ -16,5 +16,7 @@ public class AppointmentReserveRequest {
 
 	@JsonProperty("fechaHora")
 	public String datetime;
+	@JsonProperty("modalidad")
+	public String modality;
 
 }

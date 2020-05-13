@@ -16,7 +16,6 @@ import com.colsubsidio.health.appointments.withoutorder.model.AppointmentReserve
 import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrder;
 import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderResponse;
-import com.colsubsidio.health.appointments.withoutorder.model.DeleteWithoutOrderRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.ReservationAppointmentRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.ReservationAppointmentResponse;
 import com.colsubsidio.health.appointments.withoutorder.model.ReserveWithoutOrderResponse;
@@ -99,7 +98,6 @@ public class AppointmentWithoutOrderBusiness {
 			createWithoutOrder.setIdAppointment(logAppoint.getIdReservation());
 			createWithoutOrder.setDesistAppointment("");
 			response = appointmentWithoutOrderService.getCreateWithoutOrder(createWithoutOrder);
-
 			if (response != null && response.getStatusCode().equals(HttpStatus.OK) && response.getBody() != null) {
 				response = validateCreate(logAppoint, response.getBody(), schedule);
 			} else {
@@ -173,8 +171,10 @@ public class AppointmentWithoutOrderBusiness {
 						getCancelWithoutOrder(logAppoint);
 					} else if (result.getCode().equals("I")) {
 						createWithoutOrder = new CreateWithoutOrder();
-						logsDAO.createLog("create", logAppoint.toString());
-						schedule.setState("create");
+						String action = logAppoint.getDesistAppointment() != null
+								&& logAppoint.getDesistAppointment().equals("X") ? cancelAplication : "create";
+						logsDAO.createLog(action, logAppoint.toString());
+						schedule.setState(action);
 						scheduleDAO.updateSchedule(schedule);
 						createWithoutOrder.getAppointment().setIdReserve(logAppoint.getIdReservation());
 						createWithoutOrder.getAppointment().setValue(logAppoint.getValue());
@@ -239,7 +239,6 @@ public class AppointmentWithoutOrderBusiness {
 			responseReserve = appointmentWithoutOrderService.getReservationAppointment(reservationAppointment);
 
 			if (responseReserve != null && responseReserve.getStatusCode().equals(HttpStatus.OK)) {
-				System.out.println(responseReserve);
 				this.validateReservation(logAppoint, reservationAppointment,
 						responseReserve.getBody().getReserveWithoutOrder());
 				reservationAppointmentResponse = responseReserve.getBody();
@@ -276,7 +275,6 @@ public class AppointmentWithoutOrderBusiness {
 			logsDAO.createLog("createInformation", logAppoint.toString());
 			createWithoutOrder = appointmentInformation.getCreateWithoutOrderRequest();
 			response = appointmentWithoutOrderService.getCreateWithoutOrder(createWithoutOrder);
-			System.out.println(response);
 			if (response != null && response.getStatusCode().equals(HttpStatus.OK) && response.getBody() != null) {
 				response = validateCreate(logAppoint, response.getBody(), schedule);
 			} else {
@@ -284,13 +282,9 @@ public class AppointmentWithoutOrderBusiness {
 				getCancelWithoutOrder(logAppoint);
 			}
 		} catch (Exception e) {
-			// System.out.println(e);
-			e.printStackTrace();
 			response = getCancelWithoutOrder(logAppoint);
-			/*
-			 * logsManager.logsBuildAppInsights(exception,
-			 * "AppointmentWithoutOrderBusiness; getCreateWithoutOrder; " + e.getMessage());
-			 */
+			logsManager.logsBuildAppInsights(exception,
+					"AppointmentWithoutOrderBusiness; getCreateWithoutOrder; " + e.getMessage());
 		}
 		return response;
 	}
@@ -309,7 +303,7 @@ public class AppointmentWithoutOrderBusiness {
 
 			if (logAppoint.getIdReservation() != null && !logAppoint.getIdReservation().isEmpty()) {
 				createWithoutOrder.setIdAppointment(logAppoint.getIdReservation());
-				createWithoutOrder.setDesistAppointment("x");
+				createWithoutOrder.setDesistAppointment("X");
 				response = appointmentWithoutOrderService.getCreateWithoutOrder(createWithoutOrder).getBody();
 
 				if (response.getResult() != null && !response.getResult().isEmpty()) {
