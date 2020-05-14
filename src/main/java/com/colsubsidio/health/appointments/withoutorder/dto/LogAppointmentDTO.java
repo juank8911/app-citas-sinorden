@@ -35,11 +35,12 @@ public class LogAppointmentDTO {
 	private String value;
 	@JsonProperty("citaDesistir")
 	public String desistAppointment;
+	@JsonProperty("modalidad")
+	public String modality;
 
 	@Override
 	public String toString() {
-		return typeDocument + "; " + numberDocument + "; " + name + "; " + idReservation + "; " + idOrder + "; "
-				+ idSpecialty + "; " + descriptionSpecialty + "; " + date + "; " + ipClient;
+		return typeDocument + "; " + numberDocument + "; " + name + "; " + modality + "; " + idReservation + "; "
+				+ idOrder + "; " + idSpecialty + "; " + descriptionSpecialty + "; " + date + "; " + ipClient;
 	}
-
 }

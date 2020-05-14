@@ -121,7 +121,17 @@ public class AppointmentWithoutOrderBusiness {
 				&& appointmentInformation.getCreateWithoutOrderRequest().getDesistAppointment() != null
 						? appointmentInformation.getCreateWithoutOrderRequest().getDesistAppointment()
 						: "";
-						
+
+		String modality = appointmentInformation.getReserveWithoutOrderRequest() != null
+				&& appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder() != null
+				&& appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder()
+						.getAppointment() != null
+				&& appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder().getAppointment()
+						.getModality() != null
+								? appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder()
+										.getAppointment().getModality()
+								: "P";
+
 		appointmentInformation.getPatientDetail().buildFullname();
 		logAppoint.setTypeDocument(appointmentInformation.getPatientDetail().getTypeDocument());
 		logAppoint.setNumberDocument(appointmentInformation.getPatientDetail().getNumberDocument());
@@ -135,6 +145,7 @@ public class AppointmentWithoutOrderBusiness {
 				.getAppointment().getDatetime());
 		logAppoint.setIpClient(appointmentInformation.getClientDetail().getIpAddress());
 		logAppoint.setDesistAppointment(desist);
+		logAppoint.setModality(modality);
 	}
 
 	private void validateReservation(LogAppointmentDTO logAppoint, ReservationAppointmentRequest reservationAppointment,
