@@ -117,6 +117,11 @@ public class AppointmentWithoutOrderBusiness {
 	private void buildPatientData(LogAppointmentDTO logAppoint, AppointmentInformationDTO appointmentInformation)
 			throws NullPointerException {
 
+		String desist = appointmentInformation.getCreateWithoutOrderRequest() != null
+				&& appointmentInformation.getCreateWithoutOrderRequest().getDesistAppointment() != null
+						? appointmentInformation.getCreateWithoutOrderRequest().getDesistAppointment()
+						: "";
+						
 		appointmentInformation.getPatientDetail().buildFullname();
 		logAppoint.setTypeDocument(appointmentInformation.getPatientDetail().getTypeDocument());
 		logAppoint.setNumberDocument(appointmentInformation.getPatientDetail().getNumberDocument());
@@ -129,6 +134,7 @@ public class AppointmentWithoutOrderBusiness {
 		logAppoint.setDate(appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder()
 				.getAppointment().getDatetime());
 		logAppoint.setIpClient(appointmentInformation.getClientDetail().getIpAddress());
+		logAppoint.setDesistAppointment(desist);
 	}
 
 	private void validateReservation(LogAppointmentDTO logAppoint, ReservationAppointmentRequest reservationAppointment,
