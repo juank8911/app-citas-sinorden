@@ -15,7 +15,7 @@ spring:
     username: colsadmin@cols-db-digqa-util
     password: 123456789!aA
   application:
-    name: api-salud-citas-sinorden
+    name: api-citas-sinorden
     version: develop
   sleuth:
      sampler:
@@ -59,7 +59,7 @@ apigee:
     logger: /api/v1/tecnologia/logger  
 colsubsidio:
   elasticSearch:
-    index: api-erp-manager
+    index: api-citas-sinorden
     type: api-azure
   procedures:
     schedule: 
@@ -79,11 +79,16 @@ spring:
   application:
     name: ${APP_NAME}
     version: ${APP_VERSION}
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: ${MYSQL_CONNECTION_SPRING}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
   sleuth:
      sampler:
         probability: 1
 azure:
-  application-insights:
+  application-insights: 
     instrumentation-key: ${AZURE_INSIGHT_KEY}
 eureka:
   client:
@@ -97,19 +102,14 @@ eureka:
     healthCheckUrlPath: health
 ribbon:
   eureka:
-    enabled: true  
-api:
-  back:
-    legado:
-      get: ${LEGADO_GET}
-      post: ${LEGADO_POST}
+    enabled: true
 apigee:
   url: ${APIGEE}
   token:
     url: /oauth/client_credential/accesstoken
     clienteId: ${APIGEE_CLIENT_ID}
     clienteSecreto: ${APIGEE_CLIENT_SECRET}
-    maxTimeInMillis: 300000 #300000 millis = 5 minutes
+    maxTimeInMillis: 300000
   path:
     auth: /oauth/client_credential/accesstoken
     logger: /api/v1/tecnologia/logger  
@@ -117,3 +117,11 @@ colsubsidio:
   elasticSearch:
     index: ${ELASTICSEARCH_INDEX}
     type: ${ELASTICSEARCH_TYPE}
+  procedures:
+    schedule: 
+      insert: CALL PR_COLSSALUD_SCHEDULE_I_RESERVATION(:p_date, :p_order, :p_reservation, :p_specialty, :p_state, :p_type_document, :p_document_number, :p_data, :p_cancellation, :p_modified, :p_modified_by, :p_created, :p_created_by)
+      update: CALL PR_COLSSALUD_SCHEDULE_U_RESERVATION(:p_order, :p_reservation, :p_specialty, :p_state, :p_type_document, :p_document_number, :p_cancellation, :p_modified, :p_modified_by)
+      select: CALL PR_COLSSALUD_SCHEDULE_S_RESERVATION()
+    logs:
+      insert: CALL PR_COLSSALUD_I_LOGS(:accion, :message)    
+    
