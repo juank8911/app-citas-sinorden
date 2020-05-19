@@ -1,5 +1,5 @@
 server:
-  port: ${SERVER_PORT}
+  port: 80
   servlet:
     context-path: /v1.0/
 spring:
@@ -74,6 +74,10 @@ scheduled:
       enable: false
       borrarcitas: 300000
 ---
+server:
+  port: ${SERVER_PORT}
+  servlet:
+    context-path: /v1.0/
 spring:
   profiles: release
   application:
