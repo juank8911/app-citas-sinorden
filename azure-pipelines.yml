@@ -26,10 +26,11 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
-    options: '-Pprod -Dsonar.projectKey=api-citas-sinorden -Dsonar.projectName=api-citas-sinorden'
+    options: '-Dsonar.projectKey=api-citas-sinorden -Dsonar.projectName=api-citas-sinorden'
     sonarQubeRunAnalysis: true
     codeCoverageToolOption: JaCoCo
     codeCoverageSourceDirectories: src/main
+    mavenAuthenticateFeed: true
 
 - task: Docker@2
   inputs:
