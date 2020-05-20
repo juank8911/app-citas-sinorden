@@ -128,4 +128,9 @@ colsubsidio:
       select: CALL PR_COLSSALUD_SCHEDULE_S_RESERVATION()
     logs:
       insert: CALL PR_COLSSALUD_I_LOGS(:accion, :message)    
+scheduled:
+  agendamiento:
+    tarea:
+      enable: true
+      borrarcitas: 300000      
     
