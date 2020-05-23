@@ -12,7 +12,7 @@ import com.colsubsidio.health.appointments.withoutorder.business.AppointmentTask
  * @author LordMVP
  */
 @Component
-@ConditionalOnProperty(value = "scheduled.agendamiento.tarea.borrarcitas.enabled", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(value = "scheduled.agendamiento.tarea.enabled", havingValue = "true", matchIfMissing = false)
 public class AppointmentTasksCron {
 
 	@Autowired

@@ -27,6 +27,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableAsync
 @EnableSwagger2
 @Configuration
+@EnableScheduling
 @CrossOrigin(origins = "*")
 public class ApiAppointmentsWithoutOrderApplication {
 

@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8081
   servlet:
     context-path: /v1.0/
 spring:
@@ -71,7 +71,7 @@ colsubsidio:
 scheduled:
   agendamiento:
     tarea:
-      enable: false
+      enabled: true
       borrarcitas: 300000
 ---
 server:
@@ -131,6 +131,6 @@ colsubsidio:
 scheduled:
   agendamiento:
     tarea:
-      enable: true
+      enabled: true
       borrarcitas: 300000      
     
