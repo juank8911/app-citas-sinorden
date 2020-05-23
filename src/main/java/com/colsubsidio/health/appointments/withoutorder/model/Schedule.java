@@ -29,6 +29,10 @@ public class Schedule {
 	private Timestamp created;
 	private String created_by;
 
+	public Schedule() {
+
+	}
+
 	public Schedule(Timestamp date, String order, String reservation, String specialty, String state,
 			String type_document, String document_number, String data, String cancellation, Timestamp modified,
 			String modified_by, Timestamp created, String created_by) {
