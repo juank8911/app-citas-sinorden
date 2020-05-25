@@ -8,11 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+
 import com.colsubsidio.health.appointments.withoutorder.dao.ScheduleDAO;
 import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderResponse;
-import com.colsubsidio.health.appointments.withoutorder.model.DeleteWithoutOrderRequest;
-import com.colsubsidio.health.appointments.withoutorder.model.DeleteWithoutOrderResponse;
 import com.colsubsidio.health.appointments.withoutorder.model.Schedule;
 import com.colsubsidio.health.appointments.withoutorder.services.AppointmentWithoutOrderService;
 import com.colsubsidio.health.appointments.withoutorder.util.DateUtils;
@@ -40,7 +39,8 @@ public class AppointmentTasksBusiness {
 		CreateWithoutOrderRequest deleteAppoint;
 		Gson gson = new Gson();
 		ResponseEntity<CreateWithoutOrderResponse> responseEntity = null;
-
+		CreateWithoutOrderResponse response;
+		String status;
 		try {
 
 			List<Schedule> listSchedule = scheduleDAO.selectSchedule();
@@ -56,12 +56,19 @@ public class AppointmentTasksBusiness {
 						deleteAppoint.setDesistAppointment("X");
 
 						responseEntity = appointmentWithoutOrderService.getCreateWithoutOrder(deleteAppoint);
+
 						if (responseEntity.getStatusCode().equals(HttpStatus.OK)
 								&& !responseEntity.getBody().equals("")) {
+							response = responseEntity.getBody();
+							status = "errorCancel";
+							if (response != null && !response.getResult().isEmpty()) {
+								status = response.getResult().get(0).getCode().equals("I") ? "cancelTask" : status;
+							}
+
 							scheduleDAO.updateSchedule(new Schedule("", schedule.getReservation(),
-									schedule.getSpecialty(), "cancelTask", schedule.getType_document(),
-									schedule.getDocument_number(), gson.toJson(responseEntity),
-									dateUtils.getDateTimeTimeStamp(), "deleteWithoutOrder"));
+									schedule.getSpecialty(), status, schedule.getType_document(),
+									schedule.getDocument_number(), gson.toJson(response),
+									dateUtils.getDateTimeTimeStamp(), "deleteWithOrder"));
 						} else {
 							logsManager.logsBuildAppInsights(information,
 									"AppointmentTasksBusiness; incorrect appointment elimination"
