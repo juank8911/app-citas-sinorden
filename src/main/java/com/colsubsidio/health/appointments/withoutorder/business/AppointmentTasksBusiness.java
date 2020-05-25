@@ -9,6 +9,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.colsubsidio.health.appointments.withoutorder.dao.ScheduleDAO;
+import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderRequest;
+import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderResponse;
 import com.colsubsidio.health.appointments.withoutorder.model.DeleteWithoutOrderRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.DeleteWithoutOrderResponse;
 import com.colsubsidio.health.appointments.withoutorder.model.Schedule;
@@ -35,9 +37,9 @@ public class AppointmentTasksBusiness {
 	@Async("asyncExecutor")
 	public void searchAppoinmentError() {
 
-		DeleteWithoutOrderRequest delete;
+		CreateWithoutOrderRequest deleteAppoint;
 		Gson gson = new Gson();
-		ResponseEntity<DeleteWithoutOrderResponse> responseEntity = null;
+		ResponseEntity<CreateWithoutOrderResponse> responseEntity = null;
 
 		try {
 
@@ -49,10 +51,11 @@ public class AppointmentTasksBusiness {
 						"AppointmentTasksBusiness; list appointments with error, quantity = " + listSchedule.size());
 				for (Schedule schedule : listSchedule) {
 					if (schedule != null && !schedule.getReservation().isEmpty()) {
-						delete = new DeleteWithoutOrderRequest();
-						delete.getDeleteWithoutOrder().getAppointment().setIdReserve(schedule.getReservation());
+						deleteAppoint = new CreateWithoutOrderRequest();
+						deleteAppoint.setIdAppointment(schedule.getReservation());
+						deleteAppoint.setDesistAppointment("X");
 
-						responseEntity = appointmentWithoutOrderService.getDeleteWithoutOrder(delete);
+						responseEntity = appointmentWithoutOrderService.getCreateWithoutOrder(deleteAppoint);
 						if (responseEntity.getStatusCode().equals(HttpStatus.OK)
 								&& !responseEntity.getBody().equals("")) {
 							scheduleDAO.updateSchedule(new Schedule("", schedule.getReservation(),
