@@ -65,10 +65,10 @@ public class AppointmentTasksBusiness {
 								status = response.getResult().get(0).getCode().equals("I") ? "cancelTask" : status;
 							}
 
-							scheduleDAO.updateSchedule(new Schedule("", schedule.getReservation(),
+							scheduleDAO.updateSchedule(new Schedule(null, schedule.getReservation(),
 									schedule.getSpecialty(), status, schedule.getType_document(),
 									schedule.getDocument_number(), gson.toJson(response),
-									dateUtils.getDateTimeTimeStamp(), "deleteWithOrder"));
+									dateUtils.getDateTimeTimeStamp(), "deleteWithoutOrder"));
 						} else {
 							logsManager.logsBuildAppInsights(information,
 									"AppointmentTasksBusiness; incorrect appointment elimination"
