@@ -53,5 +53,7 @@ public class MedicalAppointmentDTO {
 	private String documentCountable;
 	@JsonProperty("fecha")
 	private String date;
+	@JsonProperty("modalidad")
+	private String modality;
 
 }
