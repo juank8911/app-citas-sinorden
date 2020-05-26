@@ -40,7 +40,7 @@ public class DeleteWithoutOrderBusiness {
 	private static String exception = "exception";
 
 	public ResponseEntity<DeleteWithoutOrderResponse> getDeleteWithoutOrder(DeleteInformationDTO deleteInformation) {
-		
+
 		DeleteWithoutOrderResponse response = new DeleteWithoutOrderResponse();
 		ResponseEntity<DeleteWithoutOrderResponse> responseDelete = null;
 		DeleteWithoutOrderRequest deleteWithoutOrderRequest = deleteInformation.getDeleteWithoutOrder();
@@ -72,6 +72,8 @@ public class DeleteWithoutOrderBusiness {
 		logAppoint.setTypeDocument(deleteInformation.getPatientDetail().getTypeDocument());
 		logAppoint.setNumberDocument(deleteInformation.getPatientDetail().getNumberDocument());
 		logAppoint.setName(deleteInformation.getPatientDetail().getFullname());
+		logAppoint.setModality(deleteInformation.getMedicalAppointment().getModality().isEmpty() ? "P"
+				: deleteInformation.getMedicalAppointment().getModality());
 		logAppoint.setIdReservation(deleteInformation.getMedicalAppointment().getIdReserve());
 		logAppoint.setIdOrder(null);
 		logAppoint.setIdSpecialty(deleteInformation.getSpecialtyDetail().getCode());
