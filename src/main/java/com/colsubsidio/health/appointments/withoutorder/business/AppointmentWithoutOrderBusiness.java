@@ -55,7 +55,6 @@ public class AppointmentWithoutOrderBusiness {
 		ReservationAppointmentRequest reservationAppointment;
 
 		ResponseEntity<ReservationAppointmentResponse> responseReserve = null;
-
 		try {
 
 			this.buildPatientData(logAppoint, appointmentInformation);
@@ -63,7 +62,6 @@ public class AppointmentWithoutOrderBusiness {
 
 			reservationAppointment = appointmentInformation.getReserveWithoutOrderRequest();
 			responseReserve = appointmentWithoutOrderService.getReservationAppointment(reservationAppointment);
-
 			if (responseReserve != null && responseReserve.getStatusCode().equals(HttpStatus.OK)) {
 				this.validateReservation(logAppoint, reservationAppointment,
 						responseReserve.getBody().getReserveWithoutOrder());
@@ -73,10 +71,14 @@ public class AppointmentWithoutOrderBusiness {
 			}
 			resultList.add(new Result(ResultAppointmentEnum.WARNING.getCode(),
 					ResultAppointmentEnum.WARNING.getDescription()));
-			createWithoutOrderResponse
-					.setResult(responseReserve != null && responseReserve.getBody().getResult() != null
-							&& !responseReserve.getBody().getResult().isEmpty() ? responseReserve.getBody().getResult()
-									: resultList);
+			if (createWithoutOrderResponse == null || createWithoutOrderResponse.getCreateWithoutOrder() == null) {
+				createWithoutOrderResponse = new CreateWithoutOrderResponse();
+				createWithoutOrderResponse
+						.setResult(responseReserve != null && responseReserve.getBody().getResult() != null
+								&& !responseReserve.getBody().getResult().isEmpty()
+										? responseReserve.getBody().getResult()
+										: resultList);
+			}
 		} catch (Exception e) {
 			logsManager.logsBuildAppInsights(exception,
 					"AppointmentWithoutOrderBusiness; getReservationWithoutOrderMerge; " + e.getMessage());
@@ -186,6 +188,7 @@ public class AppointmentWithoutOrderBusiness {
 						schedule.setState("pending");
 						scheduleDAO.updateSchedule(schedule);
 						getCancelWithoutOrder(logAppoint);
+						createWithoutOrderResponse.setCreateWithoutOrder(null);
 					} else if (result.getCode().equals("I")) {
 						createWithoutOrder = new CreateWithoutOrder();
 						String action = logAppoint.getDesistAppointment() != null
