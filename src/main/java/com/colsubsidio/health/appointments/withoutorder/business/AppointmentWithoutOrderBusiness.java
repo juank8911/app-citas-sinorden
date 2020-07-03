@@ -49,7 +49,7 @@ public class AppointmentWithoutOrderBusiness {
 	public ResponseEntity<CreateWithoutOrderResponse> getReservationWithoutOrderMerge(
 			AppointmentInformationDTO appointmentInformation) {
 
-		CreateWithoutOrderResponse createWithoutOrderResponse = new CreateWithoutOrderResponse();
+		CreateWithoutOrderResponse createWithoutOrderResponse = null;
 		LogAppointmentDTO logAppoint = new LogAppointmentDTO();
 		List<Result> resultList = new ArrayList<>();
 		ReservationAppointmentRequest reservationAppointment;
