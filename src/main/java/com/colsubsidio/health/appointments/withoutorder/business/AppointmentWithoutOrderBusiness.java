@@ -71,7 +71,8 @@ public class AppointmentWithoutOrderBusiness {
 			}
 			resultList.add(new Result(ResultAppointmentEnum.WARNING.getCode(),
 					ResultAppointmentEnum.WARNING.getDescription()));
-			if (createWithoutOrderResponse == null || createWithoutOrderResponse.getCreateWithoutOrder() == null) {
+			if (createWithoutOrderResponse == null || (createWithoutOrderResponse.getCreateWithoutOrder() == null
+					&& createWithoutOrderResponse.getResult().isEmpty())) {
 				createWithoutOrderResponse = new CreateWithoutOrderResponse();
 				createWithoutOrderResponse
 						.setResult(responseReserve != null && responseReserve.getBody().getResult() != null
