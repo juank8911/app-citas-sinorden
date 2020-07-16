@@ -65,13 +65,17 @@ public class AppointmentWithoutOrderBusiness {
 			if (responseReserve != null && responseReserve.getStatusCode().equals(HttpStatus.OK)) {
 				this.validateReservation(logAppoint, reservationAppointment,
 						responseReserve.getBody().getReserveWithoutOrder());
-				if (logAppoint.getIdReservation() != null) {
-					createWithoutOrderResponse = this.getCreateWithoutOrderMerge(logAppoint).getBody();
+				if (responseReserve.getBody() != null && !responseReserve.getBody().getResult().isEmpty()) {
+					if (logAppoint.getIdReservation() != null
+							&& responseReserve.getBody().getResult().get(0).getCode().equals("I")) {
+						createWithoutOrderResponse = this.getCreateWithoutOrderMerge(logAppoint).getBody();
+					}
 				}
 			}
 			resultList.add(new Result(ResultAppointmentEnum.WARNING.getCode(),
 					ResultAppointmentEnum.WARNING.getDescription()));
-			if (createWithoutOrderResponse == null || createWithoutOrderResponse.getCreateWithoutOrder() == null) {
+			if (createWithoutOrderResponse == null || (createWithoutOrderResponse.getCreateWithoutOrder() == null
+					&& createWithoutOrderResponse.getResult().isEmpty())) {
 				createWithoutOrderResponse = new CreateWithoutOrderResponse();
 				createWithoutOrderResponse
 						.setResult(responseReserve != null && responseReserve.getBody().getResult() != null
