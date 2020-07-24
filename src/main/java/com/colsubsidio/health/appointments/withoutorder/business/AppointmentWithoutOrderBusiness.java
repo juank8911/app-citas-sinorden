@@ -315,8 +315,9 @@ public class AppointmentWithoutOrderBusiness {
 
 	public ResponseEntity<CreateWithoutOrderResponse> getCancelWithoutOrder(LogAppointmentDTO logAppoint) {
 
+		ResponseEntity<CreateWithoutOrderResponse> response;
 		CreateWithoutOrderRequest createWithoutOrder = new CreateWithoutOrderRequest();
-		CreateWithoutOrderResponse response = new CreateWithoutOrderResponse();
+		CreateWithoutOrderResponse createWithoutOrderResponse = new CreateWithoutOrderResponse();
 		List<Result> resultList = new ArrayList<>();
 
 		Schedule schedule = new Schedule(null, logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "pending",
@@ -328,29 +329,36 @@ public class AppointmentWithoutOrderBusiness {
 			if (logAppoint.getIdReservation() != null && !logAppoint.getIdReservation().isEmpty()) {
 				createWithoutOrder.setIdAppointment(logAppoint.getIdReservation());
 				createWithoutOrder.setDesistAppointment("X");
-				response = appointmentWithoutOrderService.getCreateWithoutOrder(createWithoutOrder).getBody();
-
-				if (response.getResult() != null && !response.getResult().isEmpty()) {
-					for (Result result : response.getResult()) {
+				response = appointmentWithoutOrderService.getCreateWithoutOrder(createWithoutOrder);
+				createWithoutOrderResponse = response.getBody();
+				if (response.getStatusCode().equals(HttpStatus.OK) && createWithoutOrderResponse.getResult() != null
+						&& !createWithoutOrderResponse.getResult().isEmpty()) {
+					for (Result result : createWithoutOrderResponse.getResult()) {
 						if (result.getCode().equals("I")) {
 							schedule.setState(cancelAplication);
 							logsDAO.createLog(cancelAplication, logAppoint.toString());
+						} else {
+							schedule.setState("errorApplication");
+							logsDAO.createLog("errorApplication", logAppoint.toString());
 						}
 					}
+				} else {
+					schedule.setState("errorApplication");
+					logsDAO.createLog("errorApplication", logAppoint.toString());
 				}
 
 				resultList.add(new Result(ResultAppointmentEnum.ERROR.getCode(),
 						ResultAppointmentEnum.ERROR.getDescription()));
 			}
-			response.setCreateWithoutOrder(null);
-			response.setResult(resultList);
+			createWithoutOrderResponse.setCreateWithoutOrder(null);
+			createWithoutOrderResponse.setResult(resultList);
 		} catch (Exception e) {
 			logsManager.logsBuildAppInsights(exception,
 					"AppointmentWithoutOrderBusiness; getCancelWithoutOrder; " + e.getMessage());
 		} finally {
 			scheduleDAO.updateSchedule(schedule);
 		}
-		return new ResponseEntity<>(response, HttpStatus.OK);
+		return new ResponseEntity<>(createWithoutOrderResponse, HttpStatus.OK);
 
 	}
 
