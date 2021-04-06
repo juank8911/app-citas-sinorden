@@ -11,10 +11,10 @@ pool:
 
 steps:
 
-- task: SonarQubePrepare@4
-  inputs:
-    SonarQube: 'SonarColsubsidio'
-    scannerMode: 'Other'
+#- task: SonarQubePrepare@4
+#  inputs:
+#    SonarQube: 'SonarColsubsidio'
+#    scannerMode: 'Other'
 
 - task: Maven@3
   inputs:
@@ -26,8 +26,8 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
-    options: '-Dsonar.projectKey=api-citas-sinorden -Dsonar.projectName=api-citas-sinorden'
-    sonarQubeRunAnalysis: true
+#    options: '-Dsonar.projectKey=api-citas-sinorden -Dsonar.projectName=api-citas-sinorden'
+#    sonarQubeRunAnalysis: true
     codeCoverageToolOption: JaCoCo
     codeCoverageSourceDirectories: src/main
     mavenAuthenticateFeed: true
