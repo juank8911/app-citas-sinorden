@@ -15,7 +15,8 @@ spring:
     username: colsadmin@cols-db-digqa-util
     password: 123456789!aA
     hikari:
-      max-lifetime: 160000    
+      max-lifetime: 300000        
+      maximumPoolSize: 100  
   application:
     name: api-citas-sinorden
     version: develop
