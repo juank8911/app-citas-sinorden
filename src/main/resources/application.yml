@@ -16,7 +16,8 @@ spring:
     password: 123456789!aA
     hikari:
       max-lifetime: 300000        
-      maximumPoolSize: 100  
+      maximumPoolSize: 100
+      connectionTimeout: 3600000
   application:
     name: api-citas-sinorden
     version: develop
@@ -91,6 +92,10 @@ spring:
     url: ${MYSQL_CONNECTION_SPRING}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
+    hikari:
+      max-lifetime: 300000        
+      maximumPoolSize: 100
+      connectionTimeout: 3600000    
   sleuth:
      sampler:
         probability: 1
