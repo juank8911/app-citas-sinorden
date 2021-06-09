@@ -88,7 +88,7 @@ public class LogsManager {
 		}
 		logsBuildAppInsights("info", gson.toJson(logModel));
 		try {
-			tokenService.sendToElasticSearch(logModel);
+			//tokenService.sendToElasticSearch(logModel);
 		} catch (Exception e) {
 			logsBuildAppInsights("error", e.getMessage());
 		}
@@ -138,7 +138,7 @@ public class LogsManager {
 			logModel.setTypeStatusCode(code);
 			logModel.setMessage(exception);
 			logModel.setType(tag);
-			tokenService.sendToElasticSearch(logModel);
+			//tokenService.sendToElasticSearch(logModel);
 		} catch (Exception ex) {
 			telemetryClient.trackException(new Exception("LogsManager; LogsBuildExceptionError; " + ex.getMessage()));
 		}
