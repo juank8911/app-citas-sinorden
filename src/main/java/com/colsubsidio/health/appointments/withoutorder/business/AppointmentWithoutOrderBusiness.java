@@ -23,6 +23,7 @@ import com.colsubsidio.health.appointments.withoutorder.model.Result;
 import com.colsubsidio.health.appointments.withoutorder.model.Schedule;
 import com.colsubsidio.health.appointments.withoutorder.services.AppointmentWithoutOrderService;
 import com.colsubsidio.health.appointments.withoutorder.util.DateUtils;
+import com.colsubsidio.health.appointments.withoutorder.util.DocumentUtils;
 import com.colsubsidio.health.appointments.withoutorder.util.LogsManager;
 import com.colsubsidio.health.appointments.withoutorder.enums.ResultAppointmentEnum;
 import com.google.gson.Gson;
@@ -30,6 +31,8 @@ import com.google.gson.Gson;
 @Component
 public class AppointmentWithoutOrderBusiness {
 
+	@Autowired
+	DocumentUtils documentUtils;
 	@Autowired
 	DateUtils dateUtils;
 	@Autowired
@@ -141,12 +144,12 @@ public class AppointmentWithoutOrderBusiness {
 		appointmentInformation.getPatientDetail().buildFullname();
 		logAppoint.setTypeDocument(appointmentInformation.getPatientDetail().getTypeDocument());
 		logAppoint.setNumberDocument(appointmentInformation.getPatientDetail().getNumberDocument());
-		logAppoint.setName(appointmentInformation.getPatientDetail().getFullname());
+		logAppoint.setName(documentUtils.replaceSpecialCharacter(appointmentInformation.getPatientDetail().getFullname()));
 		logAppoint.setIdReservation(appointmentInformation.getCreateWithoutOrderRequest() == null ? null
 				: appointmentInformation.getCreateWithoutOrderRequest().getIdAppointment());
 		logAppoint.setIdOrder(null);
 		logAppoint.setIdSpecialty(appointmentInformation.getSpecialtyDetail().getCode());
-		logAppoint.setDescriptionSpecialty(appointmentInformation.getSpecialtyDetail().getDescription());
+		logAppoint.setDescriptionSpecialty(documentUtils.replaceSpecialCharacter(appointmentInformation.getSpecialtyDetail().getDescription()));
 		logAppoint.setDate(appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder()
 				.getAppointment().getDatetime());
 		logAppoint.setIpClient(appointmentInformation.getClientDetail().getIpAddress());
