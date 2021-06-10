@@ -93,9 +93,7 @@ spring:
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     hikari:
-      max-lifetime: 300000        
-      maximumPoolSize: 100
-      connectionTimeout: 3600000    
+      maximumPoolSize: 300  
   sleuth:
      sampler:
         probability: 1
