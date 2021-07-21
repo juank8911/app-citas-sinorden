@@ -8,17 +8,17 @@ import org.springframework.context.annotation.Configuration;
 import com.colsubsidio.health.appointments.withoutorder.model.ChangeBenefitPatientType;
 
 @Configuration
-@ConfigurationProperties(prefix = "changeBenefitPatientType.benefit")
+@ConfigurationProperties(prefix = "changebenefitpatienttype.benefits")
 public class ChangeBenefitPatientTypeConfig {
 
-	private List<ChangeBenefitPatientType> changeBenefit;
+	private List<ChangeBenefitPatientType> changebenefits;
 
-	public List<ChangeBenefitPatientType> getBenefits() {
-		return changeBenefit;
+	public List<ChangeBenefitPatientType> getChangeBenefits() {
+		return changebenefits;
 	}
 
-	public void setBenefits(List<ChangeBenefitPatientType> benefits) {
-		this.changeBenefit = benefits;
+	public void setChangeBenefits(List<ChangeBenefitPatientType> changeBenefits) {
+		this.changebenefits = changeBenefits;
 	}
 
 	

@@ -15,14 +15,14 @@ public class ChangeBenefitPatientTypeService {
 
 	@Autowired
 	public ChangeBenefitPatientTypeService (ChangeBenefitPatientTypeConfig changeBenefit) {
-		this.benefitChange = changeBenefit.getBenefits();
+		this.benefitChange = changeBenefit.getChangeBenefits();
 	}
 
 	public List<ChangeBenefitPatientType> getChangeBenefits() {
 		return this.benefitChange;
 	}
 
-	public ChangeBenefitPatientType getChangeBenefits(String name) {
+	public ChangeBenefitPatientType getChangeBenefit(String name) {
 		return benefitChange.stream().filter(benefit -> name.equals(benefit.getCode())).findFirst().orElse(null);
 	}
 	

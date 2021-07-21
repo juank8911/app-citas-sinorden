@@ -13,6 +13,7 @@ import com.colsubsidio.health.appointments.withoutorder.dao.ScheduleDAO;
 import com.colsubsidio.health.appointments.withoutorder.dto.AppointmentInformationDTO;
 import com.colsubsidio.health.appointments.withoutorder.dto.LogAppointmentDTO;
 import com.colsubsidio.health.appointments.withoutorder.model.AppointmentReserveResponse;
+import com.colsubsidio.health.appointments.withoutorder.model.ChangeBenefitPatientType;
 import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrder;
 import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderResponse;
@@ -22,6 +23,7 @@ import com.colsubsidio.health.appointments.withoutorder.model.ReserveWithoutOrde
 import com.colsubsidio.health.appointments.withoutorder.model.Result;
 import com.colsubsidio.health.appointments.withoutorder.model.Schedule;
 import com.colsubsidio.health.appointments.withoutorder.services.AppointmentWithoutOrderService;
+import com.colsubsidio.health.appointments.withoutorder.services.ChangeBenefitPatientTypeService;
 import com.colsubsidio.health.appointments.withoutorder.util.DateUtils;
 import com.colsubsidio.health.appointments.withoutorder.util.DocumentUtils;
 import com.colsubsidio.health.appointments.withoutorder.util.LogsManager;
@@ -45,6 +47,9 @@ public class AppointmentWithoutOrderBusiness {
 	ScheduleDAO scheduleDAO;
 	@Autowired
 	Gson gson;
+	
+	@Autowired
+	ChangeBenefitPatientTypeService changeBenefitPatientTypeService;
 
 	private static String exception = "exception";
 	private static String cancelAplication = "cancelAplication";
@@ -52,6 +57,9 @@ public class AppointmentWithoutOrderBusiness {
 	public ResponseEntity<CreateWithoutOrderResponse> getReservationWithoutOrderMerge(
 			AppointmentInformationDTO appointmentInformation) {
 
+		//apply us rule not support by SAP, for let flow Valoration Odontology such as PARTICULAR from patients POS
+		applyRuleNotSupportBySAP(appointmentInformation);
+		
 		CreateWithoutOrderResponse createWithoutOrderResponse = null;
 		LogAppointmentDTO logAppoint = new LogAppointmentDTO();
 		List<Result> resultList = new ArrayList<>();
@@ -91,6 +99,23 @@ public class AppointmentWithoutOrderBusiness {
 					"AppointmentWithoutOrderBusiness; getReservationWithoutOrderMerge; " + e.getMessage());
 		}
 		return new ResponseEntity<>(createWithoutOrderResponse, HttpStatus.OK);
+	}
+
+	private void applyRuleNotSupportBySAP(AppointmentInformationDTO appointmentInformation) {
+		List<ChangeBenefitPatientType> changeBenefitChangeList = changeBenefitPatientTypeService.getChangeBenefits();
+		
+		if (changeBenefitChangeList!=null) {
+			String patientType = appointmentInformation.getPatientDetail().getPatientType();
+			String typePlanning = appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder().getTypePlanning();
+					
+			if (patientType!="PARTICULAR" && changeBenefitChangeList.stream()
+				.filter(obj -> typePlanning.equals(obj.getCode())).count()>0) {			
+				
+				appointmentInformation.getPatientDetail().setPatientType("PARTICULAR");
+				System.out.println("Se ha parchado el tipo paciente para permitir regla de soportada por SAP");
+				
+			}
+		}
 	}
 
 	public ResponseEntity<CreateWithoutOrderResponse> getCreateWithoutOrderMerge(LogAppointmentDTO logAppoint) {
