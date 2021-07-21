@@ -101,6 +101,10 @@ public class AppointmentWithoutOrderBusiness {
 		return new ResponseEntity<>(createWithoutOrderResponse, HttpStatus.OK);
 	}
 
+	/*
+	 * Este método aplica una regla de forma temporal para cubrir una necesidad no cubierta por SAP
+	 * 
+	 * */
 	private void applyRuleNotSupportBySAP(AppointmentInformationDTO appointmentInformation) {
 		List<ChangeBenefitPatientType> changeBenefitChangeList = changeBenefitPatientTypeService.getChangeBenefits();
 		
@@ -112,7 +116,7 @@ public class AppointmentWithoutOrderBusiness {
 				.filter(obj -> typePlanning.equals(obj.getCode())).count()>0) {			
 				
 				appointmentInformation.getPatientDetail().setPatientType("PARTICULAR");
-				System.out.println("Se ha parchado el tipo paciente para permitir regla de soportada por SAP");
+				//System.out.println("Se ha parchado el tipo paciente para permitir regla de soportada por SAP");
 				
 			}
 		}
