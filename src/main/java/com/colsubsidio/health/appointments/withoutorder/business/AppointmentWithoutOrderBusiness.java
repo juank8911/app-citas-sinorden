@@ -58,8 +58,10 @@ public class AppointmentWithoutOrderBusiness {
 			AppointmentInformationDTO appointmentInformation) {
 
 		//apply us rule not support by SAP, for let flow Valoration Odontology such as PARTICULAR from patients POS
+		System.out.println(appointmentInformation);
 		applyRuleNotSupportBySAP(appointmentInformation);
-		
+		System.out.println(appointmentInformation);
+
 		CreateWithoutOrderResponse createWithoutOrderResponse = null;
 		LogAppointmentDTO logAppoint = new LogAppointmentDTO();
 		List<Result> resultList = new ArrayList<>();
@@ -72,6 +74,8 @@ public class AppointmentWithoutOrderBusiness {
 			logsDAO.createLog("reservationInformation", logAppoint.toString());
 
 			reservationAppointment = appointmentInformation.getReserveWithoutOrderRequest();
+			System.out.println("Validando");
+			System.out.println(reservationAppointment);
 			responseReserve = appointmentWithoutOrderService.getReservationAppointment(reservationAppointment);
 			if (responseReserve != null && responseReserve.getStatusCode().equals(HttpStatus.OK)) {
 				this.validateReservation(logAppoint, reservationAppointment,
@@ -116,7 +120,6 @@ public class AppointmentWithoutOrderBusiness {
 				.filter(obj -> typePlanning.equals(obj.getCode())).count()>0) {			
 				
 				appointmentInformation.getPatientDetail().setPatientType("PARTICULAR");
-				//System.out.println("Se ha parchado el tipo paciente para permitir regla de soportada por SAP");
 				
 			}
 		}
