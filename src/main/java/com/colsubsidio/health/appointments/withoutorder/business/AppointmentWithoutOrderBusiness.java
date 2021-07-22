@@ -77,6 +77,7 @@ public class AppointmentWithoutOrderBusiness {
 			System.out.println("Validando");
 			System.out.println(reservationAppointment);
 			responseReserve = appointmentWithoutOrderService.getReservationAppointment(reservationAppointment);
+			
 			if (responseReserve != null && responseReserve.getStatusCode().equals(HttpStatus.OK)) {
 				this.validateReservation(logAppoint, reservationAppointment,
 						responseReserve.getBody().getReserveWithoutOrder());
@@ -118,8 +119,8 @@ public class AppointmentWithoutOrderBusiness {
 					
 			if (patientType!="PARTICULAR" && changeBenefitChangeList.stream()
 				.filter(obj -> typePlanning.equals(obj.getCode())).count()>0) {			
-				
-				appointmentInformation.getPatientDetail().setPatientType("PARTICULAR");
+				appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder().setEps("x");
+				//appointmentInformation.getPatientDetail().setPatientType("PARTICULAR");
 				
 			}
 		}
