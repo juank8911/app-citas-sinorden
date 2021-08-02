@@ -58,9 +58,7 @@ public class AppointmentWithoutOrderBusiness {
 			AppointmentInformationDTO appointmentInformation) {
 
 		//apply us rule not support by SAP, for let flow Valoration Odontology such as PARTICULAR from patients POS
-		System.out.println(appointmentInformation);
 		applyRuleNotSupportBySAP(appointmentInformation);
-		System.out.println(appointmentInformation);
 
 		CreateWithoutOrderResponse createWithoutOrderResponse = null;
 		LogAppointmentDTO logAppoint = new LogAppointmentDTO();
@@ -74,8 +72,6 @@ public class AppointmentWithoutOrderBusiness {
 			logsDAO.createLog("reservationInformation", logAppoint.toString());
 
 			reservationAppointment = appointmentInformation.getReserveWithoutOrderRequest();
-			System.out.println("Validando");
-			System.out.println(reservationAppointment);
 			responseReserve = appointmentWithoutOrderService.getReservationAppointment(reservationAppointment);
 			
 			if (responseReserve != null && responseReserve.getStatusCode().equals(HttpStatus.OK)) {
@@ -112,15 +108,14 @@ public class AppointmentWithoutOrderBusiness {
 	 * */
 	private void applyRuleNotSupportBySAP(AppointmentInformationDTO appointmentInformation) {
 		List<ChangeBenefitPatientType> changeBenefitChangeList = changeBenefitPatientTypeService.getChangeBenefits();
-		
+
 		if (changeBenefitChangeList!=null) {
 			String patientType = appointmentInformation.getPatientDetail().getPatientType();
 			String typePlanning = appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder().getTypePlanning();
-					
+
 			if (patientType!="PARTICULAR" && changeBenefitChangeList.stream()
-				.filter(obj -> typePlanning.equals(obj.getCode())).count()>0) {			
+				.filter(obj -> typePlanning.equals(obj.getCode())).count()>0) {	
 				appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder().setEps("x");
-				//appointmentInformation.getPatientDetail().setPatientType("PARTICULAR");
 				
 			}
 		}
