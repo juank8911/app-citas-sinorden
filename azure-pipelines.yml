@@ -19,7 +19,7 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xms4096m -Xmx4096m'
+    mavenOptions: '-Xms4096m -Xmx5120m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
