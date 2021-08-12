@@ -77,6 +77,13 @@ scheduled:
     tarea:
       enabled: true
       borrarcitas: 300000
+changebenefitpatienttype:
+  benefits:
+    changebenefits:
+      -
+        code: 86VALORA
+        description: Valoración Odontológica
+    
 ---
 server:
   port: ${SERVER_PORT}
@@ -138,5 +145,11 @@ scheduled:
   agendamiento:
     tarea:
       enabled: true
-      borrarcitas: 300000      
+      borrarcitas: 300000
+changebenefitpatienttype:
+  benefits:
+    changebenefits:
+      -
+        code: ${CODEBENEFIT1}
+        description: ${DESCRIPTIONBENEFIT1}
     
