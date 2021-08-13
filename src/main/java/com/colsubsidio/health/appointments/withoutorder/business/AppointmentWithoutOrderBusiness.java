@@ -96,6 +96,7 @@ public class AppointmentWithoutOrderBusiness {
 										: resultList);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logsManager.logsBuildAppInsights(exception,
 					"AppointmentWithoutOrderBusiness; getReservationWithoutOrderMerge; " + e.getMessage());
 		}

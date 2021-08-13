@@ -53,6 +53,7 @@ public class AppointmentWithoutOrderService {
 			response = restTemplateUtil.sendRequest(uri, HttpMethod.valueOf(services.getServ_method()),
 					reservationAppointment, ReservationAppointmentResponse.class, true, services.getServ_name());
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			logsManager.logsBuildAppInsights(exception,
 					"AppointmentWithoutOrderService; getReservationAppointment; " + ex.getMessage());
 		}
