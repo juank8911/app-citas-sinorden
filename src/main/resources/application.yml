@@ -28,7 +28,11 @@ spring:
      allow-bean-definition-overriding: true
 azure:
   application-insights: #cols-ai-digptest-empresas-backend
-    instrumentation-key: d3c4e8a8-71f3-4cf4-a8fd-98ed2758e00f     
+    instrumentation-key: d3c4e8a8-71f3-4cf4-a8fd-98ed2758e00f  
+  storage: #colstssaludproduccion
+    url-connection: DefaultEndpointsProtocol=https;AccountName=sttidev;AccountKey=XziMLd8xj/iVtS8kVJPiKHwWhUtkBQ2DqmoOhfjvoM+SGZxq56oA1cmhP1x4Xev7MZUVE+fCvikOP76kddUP+w==;EndpointSuffix=core.windows.net
+    table-schedule: 
+      name: ScheduleAppointment
 eureka:
   client:
     serviceUrl:

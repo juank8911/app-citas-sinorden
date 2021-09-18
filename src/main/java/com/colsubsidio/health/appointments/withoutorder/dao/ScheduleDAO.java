@@ -48,14 +48,14 @@ public class ScheduleDAO {
 			params.addValue("p_reservation", schedule.getReservation());
 			params.addValue("p_specialty", schedule.getSpecialty());
 			params.addValue("p_state", schedule.getState());
-			params.addValue("p_type_document", schedule.getType_document());
-			params.addValue("p_document_number", schedule.getDocument_number());
+			params.addValue("p_type_document", schedule.getDocumentType());
+			params.addValue("p_document_number", schedule.getDocumentNumber());
 			params.addValue("p_data", schedule.getData());
 			params.addValue("p_cancellation", schedule.getCancellation());
 			params.addValue("p_modified", schedule.getModified());
-			params.addValue("p_modified_by", schedule.getModified_by());
+			params.addValue("p_modified_by", schedule.getModifiedBy());
 			params.addValue("p_created", schedule.getCreated());
-			params.addValue("p_created_by", schedule.getCreated_by());
+			params.addValue("p_created_by", schedule.getCreatedBy());
 
 			jdbcTemplate.update(PR_COLSSALUD_SCHEDULE_I_RESERVATION, params);
 		} catch (Exception ex) {
@@ -78,11 +78,11 @@ public class ScheduleDAO {
 			params.addValue("p_reservation", schedule.getReservation());
 			params.addValue("p_specialty", schedule.getSpecialty());
 			params.addValue("p_state", schedule.getState());
-			params.addValue("p_type_document", schedule.getType_document());
-			params.addValue("p_document_number", schedule.getDocument_number());
+			params.addValue("p_type_document", schedule.getDocumentType());
+			params.addValue("p_document_number", schedule.getDocumentNumber());
 			params.addValue("p_cancellation", schedule.getCancellation());
 			params.addValue("p_modified", schedule.getModified());
-			params.addValue("p_modified_by", schedule.getModified_by());
+			params.addValue("p_modified_by", schedule.getModifiedBy());
 
 			jdbcTemplate.update(PR_COLSSALUD_SCHEDULE_U_RESERVATION, params);
 		} catch (Exception ex) {
