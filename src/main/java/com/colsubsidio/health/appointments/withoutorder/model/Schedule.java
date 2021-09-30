@@ -1,67 +1,74 @@
 package com.colsubsidio.health.appointments.withoutorder.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
+
+import com.microsoft.azure.storage.table.TableServiceEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @Builder
 @AllArgsConstructor
 @ToString
-public class Schedule {
+public class Schedule extends TableServiceEntity implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String id;
-	private Timestamp date;
+	private String date;
 	private String order;
 	private String reservation;
 	private String specialty;
 	private String state;
-	private String type_document;
-	private String document_number;
+	private String documentType;
+	private String documentNumber;
+	private String appointmentType;
 	private String data;
 	private String cancellation;
-	private Timestamp modified;
-	private String modified_by;
-	private Timestamp created;
-	private String created_by;
+	private String modified;
+	private String modifiedBy;
+	private String created;
+	private String createdBy;
 
 	public Schedule() {
 
 	}
 
-	public Schedule(Timestamp date, String order, String reservation, String specialty, String state,
-			String type_document, String document_number, String data, String cancellation, Timestamp modified,
-			String modified_by, Timestamp created, String created_by) {
+	public Schedule(String date, String order, String reservation, String specialty, String state,
+			String documentType, String documentNumber, String data, String cancellation, String modified,
+			String modifiedBy, String created, String createdBy) {
 		this.date = date;
 		this.order = order;
 		this.reservation = reservation;
 		this.specialty = specialty;
 		this.state = state;
-		this.type_document = type_document;
-		this.document_number = document_number;
+		this.documentType = documentType;
+		this.documentNumber = documentNumber;
 		this.data = data;
 		this.cancellation = cancellation;
 		this.modified = modified;
-		this.modified_by = modified_by;
+		this.modifiedBy = modifiedBy;
 		this.created = created;
-		this.created_by = created_by;
+		this.createdBy = createdBy;
 	}
 
-	public Schedule(String order, String reservation, String specialty, String state, String type_document,
-			String document_number, String cancellation, Timestamp modified, String modified_by) {
+	public Schedule(String order, String reservation, String specialty, String state, String documentType,
+			String documentNumber, String cancellation, String modified, String modifiedBy) {
 		this.order = order;
 		this.reservation = reservation;
 		this.specialty = specialty;
 		this.state = state;
-		this.type_document = type_document;
-		this.document_number = document_number;
+		this.documentType = documentType;
+		this.documentNumber = documentNumber;
 		this.cancellation = cancellation;
 		this.modified = modified;
-		this.modified_by = modified_by;
+		this.modifiedBy = modifiedBy;
 	}
 
 }

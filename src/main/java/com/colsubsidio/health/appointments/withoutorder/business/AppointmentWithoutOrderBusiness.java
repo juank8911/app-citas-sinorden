@@ -24,6 +24,7 @@ import com.colsubsidio.health.appointments.withoutorder.model.Result;
 import com.colsubsidio.health.appointments.withoutorder.model.Schedule;
 import com.colsubsidio.health.appointments.withoutorder.services.AppointmentWithoutOrderService;
 import com.colsubsidio.health.appointments.withoutorder.services.ChangeBenefitPatientTypeService;
+import com.colsubsidio.health.appointments.withoutorder.tablestorage.ScheduleStorage;
 import com.colsubsidio.health.appointments.withoutorder.util.DateUtils;
 import com.colsubsidio.health.appointments.withoutorder.util.DocumentUtils;
 import com.colsubsidio.health.appointments.withoutorder.util.LogsManager;
@@ -43,11 +44,13 @@ public class AppointmentWithoutOrderBusiness {
 	AppointmentWithoutOrderService appointmentWithoutOrderService;
 	@Autowired
 	LogsDAO logsDAO;
+//	@Autowired
+//	ScheduleDAO scheduleDAO;
 	@Autowired
-	ScheduleDAO scheduleDAO;
+	ScheduleStorage scheduleStorage;
 	@Autowired
 	Gson gson;
-	
+
 	@Autowired
 	ChangeBenefitPatientTypeService changeBenefitPatientTypeService;
 
@@ -57,7 +60,8 @@ public class AppointmentWithoutOrderBusiness {
 	public ResponseEntity<CreateWithoutOrderResponse> getReservationWithoutOrderMerge(
 			AppointmentInformationDTO appointmentInformation) {
 
-		//apply us rule not support by SAP, for let flow Valoration Odontology such as PARTICULAR from patients POS
+		// apply us rule not support by SAP, for let flow Valoration Odontology such as
+		// PARTICULAR from patients POS
 		applyRuleNotSupportBySAP(appointmentInformation);
 
 		CreateWithoutOrderResponse createWithoutOrderResponse = null;
@@ -73,7 +77,7 @@ public class AppointmentWithoutOrderBusiness {
 
 			reservationAppointment = appointmentInformation.getReserveWithoutOrderRequest();
 			responseReserve = appointmentWithoutOrderService.getReservationAppointment(reservationAppointment);
-			
+
 			if (responseReserve != null && responseReserve.getStatusCode().equals(HttpStatus.OK)) {
 				this.validateReservation(logAppoint, reservationAppointment,
 						responseReserve.getBody().getReserveWithoutOrder());
@@ -96,6 +100,7 @@ public class AppointmentWithoutOrderBusiness {
 										: resultList);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logsManager.logsBuildAppInsights(exception,
 					"AppointmentWithoutOrderBusiness; getReservationWithoutOrderMerge; " + e.getMessage());
 		}
@@ -103,20 +108,22 @@ public class AppointmentWithoutOrderBusiness {
 	}
 
 	/*
-	 * Este método aplica una regla de forma temporal para cubrir una necesidad no cubierta por SAP
+	 * Este método aplica una regla de forma temporal para cubrir una necesidad no
+	 * cubierta por SAP
 	 * 
-	 * */
+	 */
 	private void applyRuleNotSupportBySAP(AppointmentInformationDTO appointmentInformation) {
 		List<ChangeBenefitPatientType> changeBenefitChangeList = changeBenefitPatientTypeService.getChangeBenefits();
 
-		if (changeBenefitChangeList!=null) {
+		if (changeBenefitChangeList != null) {
 			String patientType = appointmentInformation.getPatientDetail().getPatientType();
-			String typePlanning = appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder().getTypePlanning();
+			String typePlanning = appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder()
+					.getTypePlanning();
 
-			if (patientType!="PARTICULAR" && changeBenefitChangeList.stream()
-				.filter(obj -> typePlanning.equals(obj.getCode())).count()>0) {	
+			if (patientType != "PARTICULAR"
+					&& changeBenefitChangeList.stream().filter(obj -> typePlanning.equals(obj.getCode())).count() > 0) {
 				appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder().setEps("x");
-				
+
 			}
 		}
 	}
@@ -126,9 +133,9 @@ public class AppointmentWithoutOrderBusiness {
 		ResponseEntity<CreateWithoutOrderResponse> response = null;
 		CreateWithoutOrderRequest createWithoutOrder = new CreateWithoutOrderRequest();
 
-		Schedule schedule = new Schedule(null, logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "pending",
-				logAppoint.getTypeDocument(), logAppoint.getNumberDocument(), null, dateUtils.getDateTimeTimeStamp(),
-				logAppoint.getNumberDocument());
+		Schedule schedule = new Schedule(null, logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "PENDING",
+				logAppoint.getTypeDocument(), logAppoint.getNumberDocument(), null,
+				dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"), logAppoint.getNumberDocument());
 
 		try {
 			logsDAO.createLog("createInformation", logAppoint.toString());
@@ -143,8 +150,8 @@ public class AppointmentWithoutOrderBusiness {
 			}
 		} catch (Exception e) {
 			response = getCancelWithoutOrder(logAppoint);
-			schedule.setState("pending");
-			scheduleDAO.updateSchedule(schedule);
+			schedule.setState("PENDING");
+			scheduleStorage.updateSchedule(schedule);
 			logsManager.logsBuildAppInsights(exception,
 					"AppointmentWithoutOrderBusiness; getCreateWithoutOrder; " + e.getMessage());
 		}
@@ -172,12 +179,14 @@ public class AppointmentWithoutOrderBusiness {
 		appointmentInformation.getPatientDetail().buildFullname();
 		logAppoint.setTypeDocument(appointmentInformation.getPatientDetail().getTypeDocument());
 		logAppoint.setNumberDocument(appointmentInformation.getPatientDetail().getNumberDocument());
-		logAppoint.setName(documentUtils.replaceSpecialCharacter(appointmentInformation.getPatientDetail().getFullname()));
+		logAppoint.setName(
+				documentUtils.replaceSpecialCharacter(appointmentInformation.getPatientDetail().getFullname()));
 		logAppoint.setIdReservation(appointmentInformation.getCreateWithoutOrderRequest() == null ? null
 				: appointmentInformation.getCreateWithoutOrderRequest().getIdAppointment());
 		logAppoint.setIdOrder(null);
 		logAppoint.setIdSpecialty(appointmentInformation.getSpecialtyDetail().getCode());
-		logAppoint.setDescriptionSpecialty(documentUtils.replaceSpecialCharacter(appointmentInformation.getSpecialtyDetail().getDescription()));
+		logAppoint.setDescriptionSpecialty(
+				documentUtils.replaceSpecialCharacter(appointmentInformation.getSpecialtyDetail().getDescription()));
 		logAppoint.setDate(appointmentInformation.getReserveWithoutOrderRequest().getReserveWithoutOrder()
 				.getAppointment().getDatetime());
 		logAppoint.setIpClient(appointmentInformation.getClientDetail().getIpAddress());
@@ -195,13 +204,13 @@ public class AppointmentWithoutOrderBusiness {
 				if (appointmentReserve.getIdReserve() != null && !appointmentReserve.getIdReserve().equals("null")) {
 					logAppoint.setIdReservation(reserveWithoutOrder.getAppointment().getIdReserve());
 					logAppoint.setValue(reserveWithoutOrder.getAppointment().getValue());
-					logsDAO.createLog("reservation", logAppoint.toString());
+					logsDAO.createLog("RESERVATION", logAppoint.toString());
 
-					scheduleDAO.insertSchedule(
-							new Schedule(dateUtils.getDateTimeTimeStamp(), null, logAppoint.getIdReservation(),
-									logAppoint.getIdSpecialty(), "reservation", logAppoint.getTypeDocument(),
-									logAppoint.getNumberDocument(), gson.toJson(reservationAppointment), null, null,
-									null, dateUtils.getDateTimeTimeStamp(), logAppoint.getNumberDocument()));
+					scheduleStorage.insertSchedule(new Schedule(dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"), null,
+							logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "RESERVATION",
+							logAppoint.getTypeDocument(), logAppoint.getNumberDocument(),
+							gson.toJson(reservationAppointment), null, null, null,
+							dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"), logAppoint.getNumberDocument()));
 				}
 			}
 		} catch (Exception ex) {
@@ -220,25 +229,25 @@ public class AppointmentWithoutOrderBusiness {
 			if (createWithoutOrderResponse.getResult() != null && !createWithoutOrderResponse.getResult().isEmpty()) {
 				for (Result result : createWithoutOrderResponse.getResult()) {
 					if (result.getCode().equals("E")) {
-						schedule.setState("pending");
-						scheduleDAO.updateSchedule(schedule);
+						schedule.setState("PENDING");
+						scheduleStorage.updateSchedule(schedule);
 						getCancelWithoutOrder(logAppoint);
 						createWithoutOrderResponse.setCreateWithoutOrder(null);
 					} else if (result.getCode().equals("I")) {
 						createWithoutOrder = new CreateWithoutOrder();
 						String action = logAppoint.getDesistAppointment() != null
-								&& logAppoint.getDesistAppointment().equals("X") ? cancelAplication : "create";
+								&& logAppoint.getDesistAppointment().equals("X") ? cancelAplication : "CREATE";
 						logsDAO.createLog(action, logAppoint.toString());
 						schedule.setState(action);
-						scheduleDAO.updateSchedule(schedule);
+						scheduleStorage.updateSchedule(schedule);
 						createWithoutOrder.getAppointment().setIdReserve(logAppoint.getIdReservation());
 						createWithoutOrder.getAppointment().setValue(logAppoint.getValue());
 						createWithoutOrderResponse.setCreateWithoutOrder(createWithoutOrder);
 					}
 				}
 			} else {
-				schedule.setState("pending");
-				scheduleDAO.updateSchedule(schedule);
+				schedule.setState("PENDING");
+				scheduleStorage.updateSchedule(schedule);
 				getCancelWithoutOrder(logAppoint);
 
 				resultList.add(new Result(ResultAppointmentEnum.WARNING.getCode(),
@@ -260,8 +269,8 @@ public class AppointmentWithoutOrderBusiness {
 		CreateWithoutOrderResponse createWithoutOrderResponse = new CreateWithoutOrderResponse();
 		List<Result> resultList = new ArrayList<>();
 
-		schedule.setState("pending");
-		scheduleDAO.updateSchedule(schedule);
+		schedule.setState("PENDING");
+		scheduleStorage.updateSchedule(schedule);
 
 		resultList.add(
 				new Result(ResultAppointmentEnum.WARNING.getCode(), ResultAppointmentEnum.WARNING.getDescription()));
@@ -323,9 +332,9 @@ public class AppointmentWithoutOrderBusiness {
 		try {
 			this.buildPatientData(logAppoint, appointmentInformation);
 
-			schedule = new Schedule(null, logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "pending",
+			schedule = new Schedule(null, logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "PENDING",
 					logAppoint.getTypeDocument(), logAppoint.getNumberDocument(), null,
-					dateUtils.getDateTimeTimeStamp(), logAppoint.getNumberDocument());
+					dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"), logAppoint.getNumberDocument());
 
 			logsDAO.createLog("createInformation", logAppoint.toString());
 			createWithoutOrder = appointmentInformation.getCreateWithoutOrderRequest();
@@ -351,9 +360,9 @@ public class AppointmentWithoutOrderBusiness {
 		CreateWithoutOrderResponse createWithoutOrderResponse = new CreateWithoutOrderResponse();
 		List<Result> resultList = new ArrayList<>();
 
-		Schedule schedule = new Schedule(null, logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "pending",
-				logAppoint.getTypeDocument(), logAppoint.getNumberDocument(), null, dateUtils.getDateTimeTimeStamp(),
-				logAppoint.getNumberDocument());
+		Schedule schedule = new Schedule(null, logAppoint.getIdReservation(), logAppoint.getIdSpecialty(), "PENDING",
+				logAppoint.getTypeDocument(), logAppoint.getNumberDocument(), null,
+				dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"), logAppoint.getNumberDocument());
 
 		try {
 
@@ -387,7 +396,7 @@ public class AppointmentWithoutOrderBusiness {
 			logsManager.logsBuildAppInsights(exception,
 					"AppointmentWithoutOrderBusiness; getCancelWithoutOrder; " + e.getMessage());
 		} finally {
-			scheduleDAO.updateSchedule(schedule);
+			scheduleStorage.updateSchedule(schedule);
 		}
 		return new ResponseEntity<>(createWithoutOrderResponse, HttpStatus.OK);
 
