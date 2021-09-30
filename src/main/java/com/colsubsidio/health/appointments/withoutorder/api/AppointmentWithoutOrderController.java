@@ -13,11 +13,8 @@ import com.colsubsidio.health.appointments.withoutorder.business.AppointmentWith
 import com.colsubsidio.health.appointments.withoutorder.business.DeleteWithoutOrderBusiness;
 import com.colsubsidio.health.appointments.withoutorder.dto.AppointmentInformationDTO;
 import com.colsubsidio.health.appointments.withoutorder.dto.DeleteInformationDTO;
-import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.CreateWithoutOrderResponse;
-import com.colsubsidio.health.appointments.withoutorder.model.DeleteWithoutOrderRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.DeleteWithoutOrderResponse;
-import com.colsubsidio.health.appointments.withoutorder.model.ReservationAppointmentRequest;
 import com.colsubsidio.health.appointments.withoutorder.model.ReservationAppointmentResponse;
 
 /**

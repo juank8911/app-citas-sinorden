@@ -45,6 +45,7 @@ public class AppointmentTasksBusiness {
 		try {
 
 			List<Schedule> listSchedule = scheduleStorage.selectSchedule();
+			validateSchedule(listSchedule);
 			logsManager.logsBuildAppInsights(information,
 					"AppointmentTasksBusiness; search for appointments with error");
 			if (listSchedule != null && !listSchedule.isEmpty()) {
@@ -66,10 +67,11 @@ public class AppointmentTasksBusiness {
 								status = response.getResult().get(0).getCode().equals("I") ? "CANCELTASK" : status;
 							}
 
-							scheduleStorage.updateSchedule(new Schedule(null, schedule.getReservation(),
-									schedule.getSpecialty(), status, schedule.getDocumentType(),
-									schedule.getDocumentNumber(), gson.toJson(response),
-									dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"), "DELETEWITHOUTORDER"));
+							schedule.setState(status);
+							schedule.setModified(dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"));
+							schedule.setModifiedBy(schedule.getDocumentNumber());
+							schedule.setCancellation(gson.toJson(response));
+							scheduleStorage.updateSchedule(schedule);
 						} else {
 							logsManager.logsBuildAppInsights(information,
 									"AppointmentTasksBusiness; incorrect appointment elimination"
@@ -85,6 +87,12 @@ public class AppointmentTasksBusiness {
 		} catch (Exception ex) {
 			logsManager.logsBuildAppInsights(exception,
 					"AppointmentTasksBusiness; searchAppoinmentError " + ex.getMessage());
+		}
+	}
+
+	public void validateSchedule(List<Schedule> listSchedule) {
+		if (listSchedule != null && !listSchedule.isEmpty()) {
+			listSchedule.removeIf(opc -> !dateUtils.validateMinutes(opc.getDate()));
 		}
 	}
 

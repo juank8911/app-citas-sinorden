@@ -7,11 +7,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.colsubsidio.health.appointments.withoutorder.model.Schedule;
 import com.colsubsidio.health.appointments.withoutorder.util.DateUtils;
 import com.colsubsidio.health.appointments.withoutorder.util.LogsManager;
+import com.colsubsidio.health.appointments.withoutorder.util.ScheduleLogsManager;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.table.CloudTable;
@@ -25,8 +27,11 @@ public class ScheduleStorage {
 	@Value("${azure.storage.url-connection}")
 	public String storageConnection;
 
-	@Value("${azure.storage.table-schedule.name}")
+	@Value("${azure.storage.schedule.table}")
 	public String storageTable;
+
+	@Value("${azure.storage.schedule.consult}")
+	public String storageConsult;
 
 	@Autowired
 	public DateUtils dateUtils;
@@ -34,10 +39,14 @@ public class ScheduleStorage {
 	@Autowired
 	LogsManager logsManager;
 
+	@Autowired
+	ScheduleLogsManager scheduleLogsManager;
+
 	private static String exception = "exception";
 	private static String partitionKey = "MEDICALAPPOINTMENT";
 	private static String appointmentType = "WITHOUTORDER";
 
+	@Async("asyncExecutor")
 	public Schedule insertSchedule(Schedule schedule) {
 
 		try {
@@ -51,13 +60,15 @@ public class ScheduleStorage {
 			TableOperation insert = TableOperation.insert(schedule);
 			cloudTable.execute(insert);
 
+			scheduleLogsManager.sendToElasticSearch(schedule);
+
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			logsManager.logsBuildAppInsights(exception, "ScheduleStorage; addQuestionsAppoint; " + ex.getMessage());
 		}
 		return schedule;
 	}
 
+	@Async("asyncExecutor")
 	public void updateSchedule(Schedule schedule) {
 
 		final String PARTITION_KEY = "PartitionKey";
@@ -85,8 +96,9 @@ public class ScheduleStorage {
 				cloudTable.execute(replaceEntity);
 			}
 
+			scheduleLogsManager.sendToElasticSearch(schedule);
+
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			logsManager.logsBuildAppInsights(exception, "ScheduleStorage; updateSchedule; " + ex.getMessage());
 		}
 	}
@@ -99,25 +111,7 @@ public class ScheduleStorage {
 
 			String fillOrder = TableQuery.generateFilterCondition("AppointmentType", TableQuery.QueryComparisons.EQUAL,
 					appointmentType);
-
-			String fillStateCreate = TableQuery.generateFilterCondition("State", TableQuery.QueryComparisons.NOT_EQUAL,
-					"CREATE");
-			String fillStateCancelTask = TableQuery.generateFilterCondition("State",
-					TableQuery.QueryComparisons.NOT_EQUAL, "CANCELTASK");
-			String fillStateCancelAplication = TableQuery.generateFilterCondition("State",
-					TableQuery.QueryComparisons.NOT_EQUAL, "CANCELAPLICATION");
-			String fillStateErrorCancel = TableQuery.generateFilterCondition("State",
-					TableQuery.QueryComparisons.NOT_EQUAL, "ERRORCANCEL");
-
-			String combinedRowFilterCreate = TableQuery.combineFilters(fillStateCreate, TableQuery.Operators.AND,
-					fillStateCancelTask);
-			String combinedRowFilterCancel = TableQuery.combineFilters(combinedRowFilterCreate,
-					TableQuery.Operators.AND, fillStateCancelAplication);
-			String combinedRowFilterError = TableQuery.combineFilters(combinedRowFilterCancel, TableQuery.Operators.AND,
-					fillStateErrorCancel);
-			String combinedRowFilter = TableQuery.combineFilters(fillOrder, TableQuery.Operators.AND,
-					combinedRowFilterError);
-			System.out.println(combinedRowFilter);
+			String combinedRowFilter = TableQuery.combineFilters(fillOrder, TableQuery.Operators.AND, storageConsult);
 			TableQuery<Schedule> dataQuery = TableQuery.from(Schedule.class).where(combinedRowFilter);
 
 			for (Schedule entity : cloudTable.execute(dataQuery)) {
@@ -126,7 +120,6 @@ public class ScheduleStorage {
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			logsManager.logsBuildAppInsights(exception, "ScheduleStorage; selectSchedule; " + ex.getMessage());
 		}
 		return table;
