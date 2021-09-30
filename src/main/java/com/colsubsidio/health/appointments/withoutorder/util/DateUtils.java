@@ -6,14 +6,26 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DateUtils {
 
+	@Autowired
+	LogsManager logsManager;
+
+	@Value("${azure.storage.schedule.minutes}")
+	public int scheduleMinutes;
+
 	public Date getDate() {
-		return new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.HOUR, -5);
+		return calendar.getTime();
 	}
 
 	public String getDateString(String formatReturn) {
@@ -53,8 +65,6 @@ public class DateUtils {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(getDate());
 			calendar.add(Calendar.MONTH, -months);
-			// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-			// return sdf.format(calendar.getTime());
 			return calendar.getTime();
 		} catch (Exception e) {
 			StringBuilder error = new StringBuilder();
@@ -75,4 +85,17 @@ public class DateUtils {
 		return timeStamp;
 	}
 
+	public boolean validateMinutes(String date) {
+
+		try {
+			SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date dateSchedule = input.parse(date);
+			Date now = getDate();
+			long minutes = TimeUnit.MILLISECONDS.toMinutes(now.getTime() - dateSchedule.getTime()) % 60;
+			return minutes > scheduleMinutes;
+		} catch (Exception ex) {
+			logsManager.logsBuildAppInsights("exception", "DateUtils; valdiateMinutes; " + ex.getMessage());
+		}
+		return true;
+	}
 }

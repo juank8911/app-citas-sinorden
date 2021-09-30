@@ -30,16 +30,14 @@ public class LogsManager {
 	private String apigeePathLogger;
 	private final TelemetryClient telemetryClient;
 	private DateUtils dateUtils;
-	private TokenService tokenService;
 
 	@Autowired
 	public LogsManager(TelemetryClient telemetryClient, DateUtils dateUtils, TokenService tokenService) {
 		this.telemetryClient = telemetryClient;
 		this.dateUtils = dateUtils;
-		this.tokenService = tokenService;
 	}
 
-	@Async
+	@Async("asyncExecutor")
 	public void logsBuildServicesReqRes(String url, Object body, Object bodyResponse, HttpMethod method,
 			HttpStatus status, long timeConn, String function) {
 		try {
@@ -64,14 +62,13 @@ public class LogsManager {
 					: new Gson().toJsonTree(bodyResponse));
 
 			obj.add("body", objReqRes);
-
 			telemetryClient.trackTrace(gson.toJson(obj));
 		} catch (Exception ex) {
 			telemetryClient.trackException(new Exception("LogsManager; LogsBuildServices; " + ex.getMessage()));
 		}
 	}
 
-	@Async
+	@Async("asyncExecutor")
 	public void telemetry(String tag, Map<String, String> map) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 		String message = gson.toJson(map);
@@ -88,14 +85,14 @@ public class LogsManager {
 		}
 		logsBuildAppInsights("info", gson.toJson(logModel));
 		try {
-			//tokenService.sendToElasticSearch(logModel);
+			// tokenService.sendToElasticSearch(logModel);
 		} catch (Exception e) {
 			logsBuildAppInsights("error", e.getMessage());
 		}
 
 	}
 
-	@Async
+	@Async("asyncExecutor")
 	public void logsBuildAppInsights(String type, String exception) {
 		try {
 			int code;
@@ -138,7 +135,7 @@ public class LogsManager {
 			logModel.setTypeStatusCode(code);
 			logModel.setMessage(exception);
 			logModel.setType(tag);
-			//tokenService.sendToElasticSearch(logModel);
+			// tokenService.sendToElasticSearch(logModel);
 		} catch (Exception ex) {
 			telemetryClient.trackException(new Exception("LogsManager; LogsBuildExceptionError; " + ex.getMessage()));
 		}

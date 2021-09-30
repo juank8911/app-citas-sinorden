@@ -8,8 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.colsubsidio.health.appointments.withoutorder.util.ScheduleLogsManager;
+import com.colsubsidio.health.appointments.withoutorder.model.Schedule;
 import com.colsubsidio.health.appointments.withoutorder.dao.LogsDAO;
-import com.colsubsidio.health.appointments.withoutorder.dao.ScheduleDAO;
 import com.colsubsidio.health.appointments.withoutorder.dto.DeleteInformationDTO;
 import com.colsubsidio.health.appointments.withoutorder.dto.LogAppointmentDTO;
 import com.colsubsidio.health.appointments.withoutorder.enums.ResultAppointmentEnum;
@@ -32,12 +33,15 @@ public class DeleteWithoutOrderBusiness {
 	AppointmentWithoutOrderService appointmentWithoutOrderService;
 	@Autowired
 	LogsDAO logsDAO;
+//	@Autowired
+//	ScheduleDAO scheduleDAO;
 	@Autowired
-	ScheduleDAO scheduleDAO;
+	ScheduleLogsManager scheduleLogsManager;
 	@Autowired
 	Gson gson;
 
 	private static String exception = "exception";
+	private static String appointmentType = "WITHOUTORDER";
 
 	public ResponseEntity<DeleteWithoutOrderResponse> getDeleteWithoutOrder(DeleteInformationDTO deleteInformation) {
 
@@ -46,12 +50,16 @@ public class DeleteWithoutOrderBusiness {
 		DeleteWithoutOrderRequest deleteWithoutOrderRequest = deleteInformation.getDeleteWithoutOrder();
 		LogAppointmentDTO logAppoint = new LogAppointmentDTO();
 		List<Result> resultList = new ArrayList<>();
+		Schedule schedule = new Schedule();
+
 		try {
 			this.buildPatientData(logAppoint, deleteInformation);
+			this.buildScheduleData(logAppoint, deleteInformation, schedule);
 			responseDelete = appointmentWithoutOrderService.getDeleteWithoutOrder(deleteWithoutOrderRequest);
 			if (responseDelete != null && responseDelete.getStatusCode().equals(HttpStatus.OK)
 					&& responseDelete.getBody() != null) {
 				logsDAO.createLog("cancel", logAppoint.toString());
+				scheduleLogsManager.sendToElasticSearch(schedule);
 				response = responseDelete.getBody();
 			} else {
 				resultList.add(new Result(ResultAppointmentEnum.ERROR.getCode(),
@@ -80,6 +88,25 @@ public class DeleteWithoutOrderBusiness {
 		logAppoint.setDescriptionSpecialty(deleteInformation.getSpecialtyDetail().getDescription());
 		logAppoint.setDate(deleteInformation.getMedicalAppointment().getDate());
 		logAppoint.setIpClient(deleteInformation.getClientDetail().getIpAddress());
+	}
+
+	private void buildScheduleData(LogAppointmentDTO logAppoint, DeleteInformationDTO deleteInformation,
+			Schedule schedule) throws NullPointerException {
+
+		schedule.setAppointmentType(appointmentType);
+		schedule.setDate(dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"));
+		schedule.setOrder(logAppoint.getIdOrder());
+		schedule.setReservation(logAppoint.getIdReservation());
+		schedule.setSpecialty(logAppoint.getIdSpecialty());
+		schedule.setDocumentType(logAppoint.getTypeDocument());
+		schedule.setDocumentNumber(logAppoint.getNumberDocument());
+		schedule.setData(gson.toJson(deleteInformation));
+		schedule.setState("CANCEL");
+		schedule.setCancellation(null);
+		schedule.setModified(null);
+		schedule.setModifiedBy(null);
+		schedule.setCreated(dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"));
+		schedule.setCreatedBy(logAppoint.getNumberDocument());
 	}
 
 }

@@ -19,11 +19,8 @@ spring:
       maximumPoolSize: 100
       connectionTimeout: 3600000
   application:
-    name: api-citas-sinorden
+    name: api-salud-citas-sinorden
     version: develop
-  sleuth:
-     sampler:
-        probability: 1
   main: 
      allow-bean-definition-overriding: true
 azure:
@@ -31,26 +28,10 @@ azure:
     instrumentation-key: d3c4e8a8-71f3-4cf4-a8fd-98ed2758e00f  
   storage: #colstssaludproduccion
     url-connection: DefaultEndpointsProtocol=https;AccountName=sttidev;AccountKey=XziMLd8xj/iVtS8kVJPiKHwWhUtkBQ2DqmoOhfjvoM+SGZxq56oA1cmhP1x4Xev7MZUVE+fCvikOP76kddUP+w==;EndpointSuffix=core.windows.net
-    table-schedule: 
-      name: ScheduleAppointment
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: https://admin:admin@col-as-digprod-service-registry.azurewebsites.net/eureka/
-  enabled: false
-  instance:
-    securePortEnabled: true
-    nonSecurePortEnabled: false
-    statusPageUrlPath: swagger-ui.html
-    healthCheckUrlPath: health
-ribbon:
-  eureka:
-    enabled: false
-api:
-  back:
-    legado:
-      get: get
-      post: post
+    schedule: 
+      table: ScheduleAppointment
+      consult: "((State ne 'CREATE') and (State ne 'CANCELTASK') and (State ne 'CANCELAPLICATION') and (State ne 'ERRORCANCEL'))"
+      minutes: 5
 apigee:
 #  url: https://colsubsidio-prod.apigee.net
   url: https://colsubsidio-test.apigee.net
@@ -64,11 +45,14 @@ apigee:
     maxTimeInMillis: 300000 #300000 millis = 5 minutes
   path:
     auth: /oauth/client_credential/accesstoken
-    logger: /api/v1/tecnologia/logger  
+    logger: /api/v1/tecnologia/logger
+    method: POST
 colsubsidio:
   elasticSearch:
     index: api-citas-sinorden
     type: api-azure
+    path: ind_sal_
+    schedule: portal_agendamiento
   procedures:
     schedule: 
       insert: CALL PR_COLSSALUD_SCHEDULE_I_RESERVATION(:p_date, :p_order, :p_reservation, :p_specialty, :p_state, :p_type_document, :p_document_number, :p_data, :p_cancellation, :p_modified, :p_modified_by, :p_created, :p_created_by)
@@ -86,8 +70,7 @@ changebenefitpatienttype:
     changebenefits:
       -
         code: 86VALORA
-        description: Valoración Odontológica
-    
+        description: Valoración Odontológica    
 ---
 server:
   port: ${SERVER_PORT}
@@ -104,26 +87,16 @@ spring:
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     hikari:
-      maximumPoolSize: 300  
-  sleuth:
-     sampler:
-        probability: 1
+      maximumPoolSize: 300   
 azure:
   application-insights: 
-    instrumentation-key: ${AZURE_INSIGHT_KEY}
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: https://admin:admin@col-as-digprod-service-registry.azurewebsites.net/eureka/
-  enabled: true
-  instance:
-    securePortEnabled: true
-    nonSecurePortEnabled: false
-    statusPageUrlPath: swagger-ui.html
-    healthCheckUrlPath: health
-ribbon:
-  eureka:
-    enabled: true
+    instrumentation-key: ${AZURE_INSIGHT_KEY} 
+  storage: #colstssaludproduccion
+    url-connection: ${AZURE_STORAGE_URL_CONNECTION}
+    schedule: 
+      table: ${AZURE_STORAGE_SCHEDULE_TABLE}
+      consult: "${AZURE_STORAGE_SCHEDULE_CONSULT}"
+      minutes: ${AZURE_STORAGE_SCHEDULE_MINUTE}    
 apigee:
   url: ${APIGEE}
   token:
@@ -133,11 +106,14 @@ apigee:
     maxTimeInMillis: 300000
   path:
     auth: /oauth/client_credential/accesstoken
-    logger: /api/v1/tecnologia/logger  
+    logger: /api/v1/tecnologia/logger
+    method: POST  
 colsubsidio:
   elasticSearch:
     index: ${ELASTICSEARCH_INDEX}
     type: ${ELASTICSEARCH_TYPE}
+    path: ${ELASTICSEARCH_INDEX_PATH}
+    schedule: ${ELASTICSEARCH_SCHEDULE_INDEX}      
   procedures:
     schedule: 
       insert: CALL PR_COLSSALUD_SCHEDULE_I_RESERVATION(:p_date, :p_order, :p_reservation, :p_specialty, :p_state, :p_type_document, :p_document_number, :p_data, :p_cancellation, :p_modified, :p_modified_by, :p_created, :p_created_by)
@@ -148,8 +124,9 @@ colsubsidio:
 scheduled:
   agendamiento:
     tarea:
-      enabled: true
-      borrarcitas: 300000
+      enabled: ${SCHEDULE_TASK_ENABLED}
+      borrarcitas: ${SCHEDULE_TASK_CRON}      
+
 changebenefitpatienttype:
   benefits:
     changebenefits:
