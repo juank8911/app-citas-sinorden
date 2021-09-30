@@ -19,10 +19,7 @@ public class DateUtils {
 	public int scheduleMinutes;
 
 	public Date getDate() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		calendar.add(Calendar.HOUR, -5);
-		return calendar.getTime();
+		return new Date();
 	}
 
 	public String getDateString(String formatReturn) {
