@@ -64,7 +64,7 @@ scheduled:
   agendamiento:
     tarea:
       enabled: true
-      borrarcitas: 300000
+      borrarcitas: 0 0/10 * * * ?
 changebenefitpatienttype:
   benefits:
     changebenefits:

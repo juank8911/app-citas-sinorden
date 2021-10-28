@@ -1,5 +1,6 @@
 package com.colsubsidio.health.appointments.withoutorder.business;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ public class AppointmentTasksBusiness {
 
 	@Async("asyncExecutor")
 	public void searchAppoinmentError() {
+
+		System.out.println("Execute task appointments with > " + new Date());
 
 		CreateWithoutOrderRequest deleteAppoint;
 		Gson gson = new Gson();
