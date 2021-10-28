@@ -15,17 +15,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class DateUtils {
 
-	@Autowired
-	LogsManager logsManager;
-
 	@Value("${azure.storage.schedule.minutes}")
 	public int scheduleMinutes;
 
 	public Date getDate() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date());
-		calendar.add(Calendar.HOUR, -5);
-		return calendar.getTime();
+		return new Date();
 	}
 
 	public String getDateString(String formatReturn) {
@@ -94,7 +88,12 @@ public class DateUtils {
 			long minutes = TimeUnit.MILLISECONDS.toMinutes(now.getTime() - dateSchedule.getTime()) % 60;
 			return minutes > scheduleMinutes;
 		} catch (Exception ex) {
-			logsManager.logsBuildAppInsights("exception", "DateUtils; valdiateMinutes; " + ex.getMessage());
+			StringBuilder error = new StringBuilder();
+			error.append(DateUtils.class.getName());
+			error.append(";");
+			error.append("validateMinutes");
+			error.append(";");
+			error.append(ex.getMessage());
 		}
 		return true;
 	}

@@ -55,6 +55,7 @@ public class AppointmentTasksBusiness {
 				logsManager.logsBuildAppInsights(information,
 						"AppointmentTasksBusiness; list appointments with error, quantity = " + listSchedule.size());
 				for (Schedule schedule : listSchedule) {
+					logsManager.logsBuildAppInsights(information, "processSchedule " + schedule);
 					if (schedule != null && !schedule.getReservation().isEmpty()) {
 						deleteAppoint = new CreateWithoutOrderRequest();
 						deleteAppoint.setIdAppointment(schedule.getReservation());
@@ -74,6 +75,7 @@ public class AppointmentTasksBusiness {
 							schedule.setModified(dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"));
 							schedule.setModifiedBy(schedule.getDocumentNumber());
 							schedule.setCancellation(gson.toJson(response));
+							schedule.setRetry(schedule.getRetry() + 1);
 							scheduleStorage.updateSchedule(schedule);
 						} else {
 							logsManager.logsBuildAppInsights(information,
