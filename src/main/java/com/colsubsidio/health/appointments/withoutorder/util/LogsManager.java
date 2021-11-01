@@ -135,6 +135,7 @@ public class LogsManager {
 			logModel.setTypeStatusCode(code);
 			logModel.setMessage(exception);
 			logModel.setType(tag);
+			System.out.println(exception);
 			// tokenService.sendToElasticSearch(logModel);
 		} catch (Exception ex) {
 			telemetryClient.trackException(new Exception("LogsManager; LogsBuildExceptionError; " + ex.getMessage()));

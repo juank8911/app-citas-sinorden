@@ -64,7 +64,7 @@ scheduled:
   agendamiento:
     tarea:
       enabled: true
-      borrarcitas: 0 0/10 * * * ?
+      borrarcitas: "0 0/1 * * * ?"
 changebenefitpatienttype:
   benefits:
     changebenefits:
@@ -125,7 +125,7 @@ scheduled:
   agendamiento:
     tarea:
       enabled: ${SCHEDULE_TASK_ENABLED}
-      borrarcitas: ${SCHEDULE_TASK_CRON}      
+      borrarcitas: "${SCHEDULE_TASK_CRON}"      
 
 changebenefitpatienttype:
   benefits:
