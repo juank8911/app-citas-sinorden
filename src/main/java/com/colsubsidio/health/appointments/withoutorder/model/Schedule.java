@@ -29,6 +29,7 @@ public class Schedule extends TableServiceEntity implements Serializable {
 	private String modifiedBy;
 	private String created;
 	private String createdBy;
+	private int retry;
 
 	public Schedule() {
 
