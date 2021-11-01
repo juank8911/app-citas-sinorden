@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.colsubsidio.health.appointments.withoutorder.services.TokenService;
@@ -31,6 +30,7 @@ public class RestTemplateUtil {
 		long startTimeTry = System.currentTimeMillis();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("app", "portal");
 		if (apigeeToken) {
 			headers.add(HttpHeaders.AUTHORIZATION, BEARER + tokenService.getToken());
 		}

@@ -18,7 +18,7 @@ public class AppointmentTasksCron {
 	@Autowired
 	private AppointmentTasksBusiness appointmentTasksBusiness;
 
-	@Scheduled(fixedDelayString = "${scheduled.agendamiento.tarea.borrarcitas}")
+	@Scheduled(cron = "${scheduled.agendamiento.tarea.borrarcitas}")
 	public void searchQuotesError() {
 		appointmentTasksBusiness.searchAppoinmentError();
 	}

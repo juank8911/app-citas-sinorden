@@ -1,5 +1,7 @@
 package com.colsubsidio.health.appointments.withoutorder.business;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,20 +39,44 @@ public class AppointmentTasksBusiness {
 	@Async("asyncExecutor")
 	public void searchAppoinmentError() {
 
+		logsManager.logsBuildAppInsights(information, "Execute task appointments with > " + dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"));
+
 		CreateWithoutOrderRequest deleteAppoint;
 		Gson gson = new Gson();
 		ResponseEntity<CreateWithoutOrderResponse> responseEntity = null;
 		CreateWithoutOrderResponse response;
-		String status;
+		String status = "";
+		List<Schedule> listSchedule = new ArrayList<>();
+
 		try {
 
-			List<Schedule> listSchedule = scheduleStorage.selectSchedule();
+			List<Schedule> listScheduleAux = scheduleStorage.selectSchedule();
+
+			if (listScheduleAux != null && !listScheduleAux.isEmpty()) {
+				logsManager.logsBuildAppInsights(information,
+						"AppointmentTasksBusiness; new search for appointments withoutorder with error");
+				for (Schedule schedule : listScheduleAux) {
+					if (!listSchedule.contains(schedule)) {
+						listSchedule.add(schedule);
+					}
+				}
+				validateSchedule(listSchedule);
+			}
+
 			logsManager.logsBuildAppInsights(information,
-					"AppointmentTasksBusiness; search for appointments with error");
+					"AppointmentTasksBusiness; appointments withoutorder > listSchedule: " + listSchedule.size()
+							+ " -- listScheduleAux: " + listSchedule.size());
+
 			if (listSchedule != null && !listSchedule.isEmpty()) {
 				logsManager.logsBuildAppInsights(information,
-						"AppointmentTasksBusiness; list appointments with error, quantity = " + listSchedule.size());
-				for (Schedule schedule : listSchedule) {
+						"AppointmentTasksBusiness; list appointments withoutorder with error, quantity = "
+								+ listSchedule.size());
+				Schedule schedule = null;
+
+				do {
+
+					schedule = listSchedule.get(0);
+					logsManager.logsBuildAppInsights(information, "processSchedule " + schedule);
 					if (schedule != null && !schedule.getReservation().isEmpty()) {
 						deleteAppoint = new CreateWithoutOrderRequest();
 						deleteAppoint.setIdAppointment(schedule.getReservation());
@@ -58,33 +84,41 @@ public class AppointmentTasksBusiness {
 
 						responseEntity = appointmentWithoutOrderService.getCreateWithoutOrder(deleteAppoint);
 
-						if (responseEntity.getStatusCode().equals(HttpStatus.OK)
-								&& !responseEntity.getBody().equals("")) {
+						if (responseEntity.getStatusCode().equals(HttpStatus.OK) && responseEntity.getBody() != null) {
 							response = responseEntity.getBody();
 							status = "ERRORCANCEL";
 							if (response != null && !response.getResult().isEmpty()) {
 								status = response.getResult().get(0).getCode().equals("I") ? "CANCELTASK" : status;
 							}
 
-							scheduleStorage.updateSchedule(new Schedule(null, schedule.getReservation(),
-									schedule.getSpecialty(), status, schedule.getDocumentType(),
-									schedule.getDocumentNumber(), gson.toJson(response),
-									dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"), "DELETEWITHOUTORDER"));
+							schedule.setState(status);
+							schedule.setModified(dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"));
+							schedule.setModifiedBy(schedule.getDocumentNumber());
+							schedule.setCancellation(gson.toJson(response));
+							schedule.setRetry(schedule.getRetry() + 1);
+							scheduleStorage.updateSchedule(schedule);
 						} else {
 							logsManager.logsBuildAppInsights(information,
 									"AppointmentTasksBusiness; incorrect appointment elimination"
 											+ gson.toJson(responseEntity));
 						}
 					}
-				}
+					listSchedule.remove(schedule);
+				} while (listSchedule != null && !listSchedule.isEmpty());
 			} else {
 				logsManager.logsBuildAppInsights(information,
-						"AppointmentTasksBusiness; no appointments found with error");
+						"AppointmentTasksBusiness; no appointments withoutorder found with error");
 			}
 
 		} catch (Exception ex) {
 			logsManager.logsBuildAppInsights(exception,
 					"AppointmentTasksBusiness; searchAppoinmentError " + ex.getMessage());
+		}
+	}
+
+	public void validateSchedule(List<Schedule> listSchedule) {
+		if (listSchedule != null && !listSchedule.isEmpty()) {
+			listSchedule.removeIf(opc -> !dateUtils.validateMinutes(opc.getDate()));
 		}
 	}
 

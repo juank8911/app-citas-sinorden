@@ -1,7 +1,6 @@
 package com.colsubsidio.health.appointments.withoutorder.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import com.microsoft.azure.storage.table.TableServiceEntity;
 
@@ -16,11 +15,6 @@ import lombok.ToString;
 @ToString
 public class Schedule extends TableServiceEntity implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private String id;
 	private String date;
 	private String order;
 	private String reservation;
@@ -35,14 +29,15 @@ public class Schedule extends TableServiceEntity implements Serializable {
 	private String modifiedBy;
 	private String created;
 	private String createdBy;
+	private int retry;
 
 	public Schedule() {
 
 	}
 
-	public Schedule(String date, String order, String reservation, String specialty, String state,
-			String documentType, String documentNumber, String data, String cancellation, String modified,
-			String modifiedBy, String created, String createdBy) {
+	public Schedule(String date, String order, String reservation, String specialty, String state, String documentType,
+			String documentNumber, String data, String cancellation, String modified, String modifiedBy, String created,
+			String createdBy) {
 		this.date = date;
 		this.order = order;
 		this.reservation = reservation;
