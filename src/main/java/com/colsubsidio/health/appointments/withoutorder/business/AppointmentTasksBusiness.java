@@ -39,7 +39,7 @@ public class AppointmentTasksBusiness {
 	@Async("asyncExecutor")
 	public void searchAppoinmentError() {
 
-		logsManager.logsBuildAppInsights(information, "Execute task appointments with > " + new Date());
+		logsManager.logsBuildAppInsights(information, "Execute task appointments with > " + dateUtils.getDateString("yyyy-MM-dd HH:mm:ss"));
 
 		CreateWithoutOrderRequest deleteAppoint;
 		Gson gson = new Gson();
